@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fun Zone 🎉 | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #fun-land{ background:linear-gradient(180deg,#FFF3E0,#FFFBF2);}
+  .fun-tabs{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;}
+  .fun-tab{ padding:10px 18px; border-radius:999px; background:var(--sky-light); font-weight:700;}
+  .fun-tab.active{ background:#FF9F43; color:white;}
+  .fun-view{ display:none; }
+  .fun-view.active{ display:block; animation:popIn .25s ease;}
+
+  /* Jokes */
+  .joke-card{
+    background:var(--cream); border-radius:20px; padding:34px 24px; text-align:center; max-width:520px; margin:0 auto;
+    min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  }
+  .joke-q{ font-size:1.3rem; font-weight:700; }
+  .joke-a{ font-size:1.15rem; font-weight:600; color:var(--grape); min-height:1.5em; }
+  .joke-controls{ display:flex; gap:14px; justify-content:center; margin-top:20px; }
+  .joke-controls button{ padding:10px 20px; border-radius:999px; background:var(--bubblegum); color:white; box-shadow:var(--shadow); }
+
+  /* Quiz */
+  .quiz-card{ max-width:560px; margin:0 auto; text-align:center; }
+  .quiz-q{ font-size:1.25rem; font-weight:700; margin-bottom:18px; }
+  .quiz-opts{ display:grid; gap:12px; }
+  .quiz-opt{
+    padding:14px; border-radius:16px; background:var(--sky-light); font-weight:700; font-size:1.05rem;
+    box-shadow:var(--shadow);
+  }
+  .quiz-opt.correct{ background:var(--grass); color:white; }
+  .quiz-opt.wrong{ background:#FF6F6F; color:white; }
+  .quiz-progress{ text-align:center; font-weight:700; margin-bottom:10px; color:#6a5c85; }
+  .quiz-done{ text-align:center; }
+  .quiz-done .big{ font-size:3rem; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7 current" href="fun-zone.html">🤪 Fun Zone</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:120px;height:50px;top:15%;left:-10%;animation-duration:40s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">🎉</div>
+    <h1>Fun Zone</h1>
+    <p>Giggles, riddles, and a silly quiz!</p>
+  </header>
+</div>
+
+<main class="land" id="fun-land">
+  <div class="panel">
+    <div class="fun-tabs">
+      <button class="fun-tab active" data-view="jokes">😂 Jokes &amp; Riddles</button>
+      <button class="fun-tab" data-view="knock">🚪 Knock Knock</button>
+      <button class="fun-tab" data-view="quiz">🧠 Silly Quiz</button>
+    </div>
+
+    <div class="fun-view active" id="view-jokes">
+      <div class="joke-card">
+        <div class="joke-q" id="joke-q"></div>
+        <div class="joke-a" id="joke-a"></div>
+      </div>
+      <div class="joke-controls">
+        <button id="joke-reveal">🙈 Reveal Answer</button>
+        <button id="joke-next">➡️ Next Joke</button>
+      </div>
+    </div>
+
+    <div class="fun-view" id="view-quiz">
+      <div class="quiz-card">
+        <div class="quiz-progress" id="quiz-progress"></div>
+        <div id="quiz-body"></div>
+      </div>
+    </div>
+
+    <div class="fun-view" id="view-knock">
+      <div class="joke-card">
+        <div class="joke-q" id="kk-q"></div>
+        <div class="joke-a" id="kk-a"></div>
+      </div>
+      <div class="joke-controls">
+        <button id="kk-open">🙋 Knock knock!</button>
+        <button id="kk-next">➡️ Next</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="stories.html">Stories</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">
+    Jokes, riddles, knock-knocks, and quiz questions are all kid-friendly. Finish the quiz for a star reward! Nothing is sent anywhere — stars live only on this device.
+  </div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+/* ============ TAB SWITCHING ============ */
+document.querySelectorAll('.fun-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.fun-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.fun-view').forEach(v=>v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-'+tab.dataset.view).classList.add('active');
+  });
+});
+
+/* ============ JOKES & RIDDLES ============ */
+const jokes = [
+  {q:"Why did the crayon feel lonely?", a:"Because it was always drawn away! 🖍️"},
+  {q:"What do you call a bear with no teeth?", a:"A gummy bear! 🐻"},
+  {q:"Why did the little star do her homework?", a:"Because she wanted to shine! ⭐"},
+  {q:"What has lots of keys but can't open a single door?", a:"A piano! 🎹"},
+  {q:"Why did the bicycle fall over?", a:"Because it was two-tired! 🚲"},
+  {q:"What do you call a fish with no eyes?", a:"A fsh! 🐟"},
+  {q:"Why did the cookie go to the doctor?", a:"Because it felt crumbly! 🍪"},
+  {q:"What do clouds wear under their raincoats?", a:"Thunderwear! ⛈️"},
+  {q:"Why is it hard to talk to a butterfly?", a:"You always have to catch it first! 🦋"},
+  {q:"What did one balloon say to the other?", a:"You look inflated today! 🎈"},
+  {q:"What do you call a dinosaur that never gives up?", a:"A try-something-saurus! 🦖"},
+  {q:"Why did the girl throw butter out the window?", a:"She wanted to see a butterfly! 🦋"},
+  {q:"What has a face and two hands but no arms?", a:"A clock! 🕰️"},
+  {q:"Why are teddy bears never hungry?", a:"They are always stuffed! 🧸"},
+  {q:"What did the banana say to the monkey?", a:"Nothing — bananas can't talk! 🙈"},
+  {q:"How do you catch a squirrel?", a:"Climb a tree and act like a nut! 🐿️"},
+  {q:"Why did the sun go to school?", a:"To get brighter! ☀️"},
+  {q:"What do you call a snowman with a suntan?", a:"A puddle! ☃️"},
+  {q:"Why couldn't the pirate learn the alphabet?", a:"Because he got stuck at C! 🏴‍☠️"},
+  {q:"What does a ghost eat for breakfast?", a:"Ghost toast with a boo-mbleberry spread! 👻"}
+];
+let jokeIdx = 0;
+function showJoke(){
+  document.getElementById('joke-q').textContent = jokes[jokeIdx].q;
+  document.getElementById('joke-a').textContent = '';
+}
+document.getElementById('joke-reveal').addEventListener('click', ()=>{
+  document.getElementById('joke-a').textContent = jokes[jokeIdx].a;
+});
+document.getElementById('joke-next').addEventListener('click', ()=>{
+  jokeIdx = (jokeIdx+1) % jokes.length;
+  showJoke();
+});
+showJoke();
+
+/* ============ SILLY QUIZ ============ */
+const quiz = [
+  {q:"What color do you get when you mix blue and yellow?", opts:["Green","Purple","Orange"], correct:0},
+  {q:"How many legs does a spider have?", opts:["6","8","10"], correct:1},
+  {q:"What do bees make?", opts:["Milk","Honey","Bread"], correct:1},
+  {q:"Which animal says 'moo'?", opts:["Cow","Duck","Cat"], correct:0},
+  {q:"What shape has three sides?", opts:["Square","Circle","Triangle"], correct:2},
+  {q:"What do you call a baby dog?", opts:["Kitten","Puppy","Cub"], correct:1},
+  {q:"Which planet do we live on?", opts:["Mars","Earth","Moon"], correct:1},
+  {q:"What do caterpillars turn into?", opts:["Bees","Butterflies","Fish"], correct:1},
+  {q:"Which fruit is yellow and very sour?", opts:["Lemon","Apple","Grapes"], correct:0},
+  {q:"How many wheels does a tricycle have?", opts:["2","3","4"], correct:1},
+  {q:"What melts in the hot sun?", opts:["Ice cream","Bread","Carrot"], correct:0},
+  {q:"Which animal is the king of the jungle?", opts:["Elephant","Lion","Zebra"], correct:1}
+];
+let quizIdx = 0, quizScore = 0, quizLocked = false;
+function renderQuiz(){
+  const body = document.getElementById('quiz-body');
+  if(quizIdx >= quiz.length){
+    document.getElementById('quiz-progress').textContent = '';
+    body.innerHTML = '';
+    const done = document.createElement('div');
+    done.className = 'quiz-done';
+    done.innerHTML = '<div class="big">🎉</div><p style="font-size:1.3rem;font-weight:700;">You got '+quizScore+' / '+quiz.length+' right!</p>';
+    if(quizScore>0){ SCW.sound('tada'); SCW.popConfetti(40); SCW.addStars(quizScore); }
+    SCW.showMascotSay('Quiz champion! '+quizScore+' right answers! 🧠🌟', 2800);
+    const again = document.createElement('button');
+    again.className = 'center-btn';
+    again.textContent = '🔄 Play Again';
+    again.addEventListener('click', ()=>{ quizIdx=0; quizScore=0; renderQuiz(); });
+    done.appendChild(again);
+    body.appendChild(done);
+    return;
+  }
+  quizLocked = false;
+  document.getElementById('quiz-progress').textContent = 'Question '+(quizIdx+1)+' of '+quiz.length+' — Score: '+quizScore;
+  const item = quiz[quizIdx];
+  body.innerHTML = '';
+  const qEl = document.createElement('div');
+  qEl.className = 'quiz-q';
+  qEl.textContent = item.q;
+  body.appendChild(qEl);
+  const optsWrap = document.createElement('div');
+  optsWrap.className = 'quiz-opts';
+  item.opts.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', ()=>{
+      if(quizLocked) return;
+      quizLocked = true;
+      if(i === item.correct){
+        btn.classList.add('correct');
+        quizScore++;
+      } else {
+        btn.classList.add('wrong');
+        optsWrap.children[item.correct].classList.add('correct');
+      }
+      setTimeout(()=>{ quizIdx++; renderQuiz(); }, 1000);
+    });
+    optsWrap.appendChild(btn);
+  });
+  body.appendChild(optsWrap);
+}
+renderQuiz();
+
+/* ============ KNOCK KNOCK ============ */
+const knockJokes = [
+  {n:"Boo", p:"Don't cry — it's only a joke! 👻"},
+  {n:"Lettuce", p:"Lettuce in, it's cold outside! 🥬"},
+  {n:"Banana", p:"Banana split, so I came back for more! 🍌"},
+  {n:"Olive", p:"Olive you and I know it! 🫒💛"},
+  {n:"Cows", p:"Cows go moo, not who! 🐮"},
+  {n:"Tank", p:"You're welcome! 🎉"},
+  {n:"Anee", p:"Anee one you like! 👋"},
+  {n:"Interrupting Cow", p:"Mooo! 🐄 (she interrupted the joke!)"},
+  {n:"Orange", p:"Orange you glad I didn't say banana? 🍊"},
+  {n:"Toby", p:"Toby or not toby, that is the question! 🤓"}
+];
+let kkIdx = 0, kkStage = 0;
+function renderKK(){
+  document.getElementById('kk-q').textContent = '👊 Knock knock!';
+  document.getElementById('kk-a').textContent = '';
+  document.getElementById('kk-open').textContent = '🙋 Who\u2019s there?';
+  if(kkStage===1){
+    document.getElementById('kk-q').textContent = knockJokes[kkIdx].n + ' who? 🤔';
+    document.getElementById('kk-open').textContent = '😄 And the answer is...';
+  } else if(kkStage===2){
+    document.getElementById('kk-q').textContent = knockJokes[kkIdx].n + ' who? 🤔';
+    document.getElementById('kk-a').textContent = '💥 ' + knockJokes[kkIdx].p;
+    document.getElementById('kk-open').textContent = '🙋 Knock knock again!';
+  }
+}
+document.getElementById('kk-open').addEventListener('click', ()=>{
+  kkStage = (kkStage+1)%3;
+  if(kkStage===0) kkIdx = (kkIdx+1)%knockJokes.length;
+  if(kkStage===2) SCW.sound('pop');
+  renderKK();
+});
+document.getElementById('kk-next').addEventListener('click', ()=>{
+  kkIdx = (kkIdx+1)%knockJokes.length;
+  kkStage = 0;
+  renderKK();
+});
+renderKK();
+</script>
+</body>
+</html>

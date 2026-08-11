@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Forest 🌳 | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #stories-land{ background:linear-gradient(180deg,#F0FFF4,#FFFBF2);}
+  .story-book{ max-width:600px; margin:0 auto; text-align:center; }
+  .story-page{
+    background:var(--cream); border-radius:20px; padding:30px; min-height:220px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  }
+  .story-emoji{ font-size:4rem;}
+  .story-text{ font-size:1.25rem; font-weight:600; line-height:1.5;}
+  .story-nav{ display:flex; justify-content:center; gap:14px; margin-top:18px;}
+  .story-nav button{ padding:10px 20px; border-radius:999px; background:var(--bubblegum); color:white;}
+  .story-picker{ display:flex; gap:10px; justify-content:center; margin-bottom:20px; flex-wrap:wrap;}
+  .story-picker button{ padding:8px 16px; border-radius:999px; background:var(--sky-light); font-weight:700;}
+  .story-picker button.active{ background:var(--grape); color:white;}
+  .story-dots{ display:flex; gap:6px; justify-content:center; margin-top:12px; }
+  .story-dots span{ width:8px; height:8px; border-radius:50%; background:#DCD3EE; }
+  .story-dots span.on{ background:var(--grape); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2 current" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:120px;height:50px;top:15%;left:-10%;animation-duration:40s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">🌳</div>
+    <h1>Story Forest</h1>
+    <p>Snuggle up for a sweet little story</p>
+  </header>
+</div>
+
+<main class="land" id="stories-land">
+  <div class="panel story-book">
+    <div class="story-picker" id="story-picker"></div>
+    <div class="story-page">
+      <div class="story-emoji" id="story-emoji">🐻</div>
+      <div class="story-text" id="story-text"></div>
+    </div>
+    <div class="story-nav">
+      <button id="story-prev">⬅ Back</button>
+      <span id="story-page-num" style="align-self:center;font-weight:700;"></span>
+      <button id="story-next">Next ➡</button>
+    </div>
+    <div class="story-dots" id="story-dots"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">
+    All ten stories are short, original, and gentle — perfect for reading along together. Finish a story and earn stars! Nothing is saved or shared.
+  </div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+const stories = [
+  { title:"Bo's Big Nap", emoji:'🐻', pages:[
+    "Bo the bear loved cozy afternoons.",
+    "One day he found a soft mossy hill.",
+    "He rolled in the grass and giggled.",
+    "The sun felt warm on his furry tummy.",
+    "Bo curled up in a ball...",
+    "...and drifted off into a big, happy nap. Zzz 💤"
+  ]},
+  { title:"Mimi Goes to the Moon", emoji:'🚀', pages:[
+    "Mimi built a rocket out of cardboard boxes.",
+    "She painted it silver and gold.",
+    "3... 2... 1... blast off, she whispered!",
+    "Mimi zoomed past fluffy clouds.",
+    "She waved to the twinkly stars.",
+    "Mimi landed gently on the moon and did a happy little moon-jump! 🌙"
+  ]},
+  { title:"The Slowest Race", emoji:'🐢', pages:[
+    "Tilly the turtle joined the big race.",
+    "All the other animals dashed ahead fast.",
+    "Tilly took slow, steady steps instead.",
+    "The fast animals stopped to nap in the shade.",
+    "Tilly kept walking, slow and sure.",
+    "Tilly crossed the finish line first — hooray for going steady! 🏁"
+  ]},
+  { title:"Pip's First Snow", emoji:'🐶', pages:[
+    "Pip the puppy woke up to a white, quiet world.",
+    "He sniffed the air — everything smelled new!",
+    "He bounded outside and left tiny paw prints.",
+    "Pip chased snowflakes as they danced down.",
+    "He made a very lopsided snow-pup with his nose.",
+    "Pip trotted home with cold paws and a warm, happy heart. ❄️"
+  ]},
+  { title:"Luna's Little Light", emoji:'⭐', pages:[
+    "Luna was the smallest star in the whole sky.",
+    "She worried her light was too tiny to matter.",
+    "One cloudy night, a lost owl couldn't find her way home.",
+    "Luna shone as brightly as she possibly could.",
+    "Her little light peeked through the clouds — just enough.",
+    "The owl found her way home, and Luna learned: small lights matter too. ⭐"
+  ]},
+  { title:"Hugo the Happy Hippo", emoji:'🦛', pages:[
+    "Hugo the hippo woke up extra giggly today.",
+    "He splashed in the river and made a HUGE happy wave.",
+    "\"Hey!\" laughed the little frogs. \"Do that again!\"",
+    "Hugo splashed and chuckled and splashed some more.",
+    "All his friends joined in the happy splashing party.",
+    "By sunset everyone was wet, silly, and very, very happy. 🦛💦"
+  ]},
+  { title:"Sunny the Sunflower", emoji:'🌻', pages:[
+    "At the edge of the meadow grew a little green sprout.",
+    "The sprout stretched up and up toward the warm sun.",
+    "One morning, a golden flower opened with a big smile.",
+    "Her name was Sunny, and she liked to wave at everything.",
+    "She waved at bees, butterflies, and even the grumpy clouds.",
+    "The grumpy clouds giggled and floated away, leaving blue sky. 🌻☀️"
+  ]},
+  { title:"Dex the Dinosaur", emoji:'🦖', pages:[
+    "Dex was the loudest dinosaur in the whole jungle.",
+    "His ROAR could be heard from the river to the hills.",
+    "But Dex's roar was too big and too scary for his friends.",
+    "So he practiced a tiny, gentle little 'rawr.'",
+    "Rawr! Rawr! Little by little, everyone came closer to play.",
+    "Dex learned: big hearts are better than big roars. 🦖💚"
+  ]},
+  { title:"Polly the Rainbow Maker", emoji:'🌈', pages:[
+    "Polly the painter rabbit had one very special paintbrush.",
+    "Wherever she brushed, a swirl of colors appeared.",
+    "She painted the apples red and the tall grass green.",
+    "She painted a butterfly that looked just like a rainbow.",
+    "When the rain stopped, Polly brushed a giant curve across the sky.",
+    "And that's how the very first rainbow was born! 🌈🐰"
+  ]},
+  { title:"The Sleepy Sheep Sisters", emoji:'🐑', pages:[
+    "Ellie and Bella were the two sleepiest sheep in the meadow.",
+    "Every night they tried to count themselves to sleep.",
+    "One, two, three... wait! We're supposed to count sheep!",
+    "\"But we ARE sheep!\" laughed Ellie, and they both giggled.",
+    "So they counted fluffy clouds instead. One, two, three...",
+    "...four... zzzz... goodnight, little sheep. 🌙🐑"
+  ]}
+];
+let curStory = 0, curPage = 0;
+const finishedStories = {};
+
+function buildPicker(){
+  const picker = document.getElementById('story-picker');
+  stories.forEach((s,i)=>{
+    const btn = document.createElement('button');
+    btn.textContent = s.emoji + ' ' + s.title;
+    if(i===0) btn.classList.add('active');
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.story-picker button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      curStory = i; curPage = 0;
+      renderStory();
+    });
+    picker.appendChild(btn);
+  });
+}
+function renderStory(){
+  const s = stories[curStory];
+  document.getElementById('story-emoji').textContent = s.emoji;
+  document.getElementById('story-text').textContent = s.pages[curPage];
+  document.getElementById('story-page-num').textContent = (curPage+1)+' / '+s.pages.length;
+  const dots = document.getElementById('story-dots');
+  dots.innerHTML = '';
+  s.pages.forEach((_,i)=>{
+    const d = document.createElement('span');
+    if(i===curPage) d.classList.add('on');
+    dots.appendChild(d);
+  });
+  if(!finishedStories[curStory] && curPage === s.pages.length-1){
+    finishedStories[curStory] = true;
+    SCW.sound('tada'); SCW.popConfetti(40); SCW.addStars(2);
+    SCW.showMascotSay('Story finished! What a lovely tale! 📖💫', 2600);
+  }
+}
+document.getElementById('story-next').addEventListener('click', ()=>{
+  const s = stories[curStory];
+  curPage = Math.min(curPage+1, s.pages.length-1);
+  renderStory();
+});
+document.getElementById('story-prev').addEventListener('click', ()=>{
+  curPage = Math.max(curPage-1, 0);
+  renderStory();
+});
+buildPicker();
+renderStory();
+</script>
+</body>
+</html>

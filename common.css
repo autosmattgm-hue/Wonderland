@@ -1,0 +1,300 @@
+/* ===================================================
+   Sunny Cloud Wonderland — shared design system
+   =================================================== */
+:root{
+  --sky:#4FC3F7;
+  --sky-light:#DFF4FF;
+  --sun:#FFD34D;
+  --bubblegum:#FF6FA3;
+  --grass:#58D68D;
+  --grape:#A66BF0;
+  --cream:#FFFBF2;
+  --ink:#3A2E4D;
+  --white:#ffffff;
+  --shadow: 0 8px 0 rgba(58,46,77,0.15);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Quicksand',sans-serif;
+  color:var(--ink);
+  background:var(--cream);
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{
+  font-family:'Baloo 2', cursive;
+  font-weight:800;
+}
+a{text-decoration:none;color:inherit;}
+button{font-family:'Baloo 2', cursive; cursor:pointer; border:none;}
+img{max-width:100%;}
+
+/* ---------- Background floaty bits ---------- */
+.sky-bg{
+  position:relative;
+  background:linear-gradient(180deg, var(--sky) 0%, var(--sky-light) 100%);
+  overflow:hidden;
+}
+.cloud{
+  position:absolute;
+  background:white;
+  border-radius:100px;
+  opacity:0.9;
+  filter:drop-shadow(0 6px 0 rgba(0,0,0,0.03));
+  animation:drift linear infinite;
+}
+@keyframes drift{
+  from{ transform:translateX(-120px);}
+  to{ transform:translateX(110vw);}
+}
+@keyframes bob{
+  0%,100%{ transform:translateY(0);}
+  50%{ transform:translateY(-14px);}
+}
+@keyframes wiggle{
+  0%,100%{ transform:rotate(-4deg);}
+  50%{ transform:rotate(4deg);}
+}
+@keyframes popIn{
+  from{ transform:scale(0); opacity:0;}
+  to{ transform:scale(1); opacity:1;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important;}
+}
+
+/* ---------- Nav ---------- */
+.navbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; flex-wrap:wrap; gap:10px;
+  justify-content:center;
+  padding:14px 10px;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(6px);
+  border-bottom:4px dashed var(--bubblegum);
+}
+.balloon-btn{
+  font-size:.95rem;
+  padding:10px 18px;
+  border-radius:999px;
+  color:white;
+  box-shadow:var(--shadow);
+  transition:transform .15s ease;
+  white-space:nowrap;
+}
+.balloon-btn:hover{ transform:translateY(-4px) scale(1.05);}
+.balloon-btn:focus-visible{ outline:3px solid var(--ink); outline-offset:2px;}
+.balloon-btn.current{ outline:3px solid var(--ink); outline-offset:2px;}
+.b1{background:var(--bubblegum);}
+.b2{background:var(--grass);}
+.b3{background:var(--grape);}
+.b4{background:#4FC3F7;}
+.b5{background:#FF9F43;}
+.b6{background:#FF4D6D;}
+.b7{background:#37B5A3;}
+
+/* ---------- Hero (home page) ---------- */
+.hero{
+  text-align:center;
+  padding:70px 20px 40px;
+  position:relative;
+}
+.hero h1{
+  font-size:clamp(2.4rem, 7vw, 5rem);
+  color:white;
+  -webkit-text-stroke:3px var(--ink);
+  text-shadow:6px 6px 0 var(--bubblegum);
+  margin:0 0 6px;
+  letter-spacing:1px;
+}
+.hero p{
+  font-size:1.3rem;
+  font-weight:600;
+  max-width:560px;
+  margin:0 auto 26px;
+  background:white;
+  display:inline-block;
+  padding:10px 22px;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+.mascot{
+  font-size:6rem;
+  display:inline-block;
+  animation:bob 3s ease-in-out infinite;
+}
+.cta{
+  margin-top:20px;
+  font-size:1.4rem;
+  padding:16px 40px;
+  border-radius:999px;
+  background:var(--sun);
+  color:var(--ink);
+  box-shadow:var(--shadow);
+  display:inline-block;
+}
+.cta:hover{ transform:translateY(-3px);}
+
+/* ---------- Small page header (sub-pages) ---------- */
+.page-hero{
+  text-align:center;
+  padding:50px 20px 60px;
+  position:relative;
+}
+.page-hero .mascot{ font-size:4.5rem;}
+.page-hero h1{
+  font-size:clamp(2rem, 6vw, 3.2rem);
+  color:white;
+  -webkit-text-stroke:2.5px var(--ink);
+  text-shadow:5px 5px 0 var(--bubblegum);
+  margin:6px 0 4px;
+}
+.page-hero p{
+  font-size:1.1rem;
+  font-weight:600;
+  max-width:520px;
+  margin:0 auto;
+  background:white;
+  display:inline-block;
+  padding:8px 20px;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+
+/* ---------- Park Map (home page lands grid) ---------- */
+.map-wrap{
+  max-width:1100px;
+  margin:10px auto 0;
+  padding:20px 20px 60px;
+}
+.map-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(190px,1fr));
+  gap:22px;
+}
+.land-pin{
+  background:white;
+  border-radius:26px;
+  padding:22px 16px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  border:4px solid transparent;
+  transition:transform .2s ease, border-color .2s ease;
+  display:block;
+}
+.land-pin:hover{
+  transform:translateY(-6px) rotate(-1deg);
+}
+.land-pin .icon{
+  font-size:3rem;
+  display:inline-block;
+  animation:wiggle 2.4s ease-in-out infinite;
+}
+.land-pin h3{ margin:8px 0 4px; font-size:1.2rem;}
+.land-pin p{ margin:0; font-size:.9rem; color:#6a5c85;}
+.land-pin.p1{border-color:var(--bubblegum);}
+.land-pin.p2{border-color:var(--grass);}
+.land-pin.p3{border-color:var(--grape);}
+.land-pin.p4{border-color:#FF9F43;}
+.land-pin.p5{border-color:#4FC3F7;}
+.land-pin.p6{border-color:#FF4D6D;}
+
+/* ---------- Sections ---------- */
+main.land{
+  padding:50px 18px 80px;
+}
+.land-title{
+  text-align:center;
+  font-size:clamp(1.8rem,4vw,2.6rem);
+  margin-bottom:6px;
+}
+.land-sub{
+  text-align:center;
+  color:#6a5c85;
+  font-weight:600;
+  margin-bottom:36px;
+}
+.panel{
+  max-width:1000px;
+  margin:0 auto 34px;
+  background:white;
+  border-radius:28px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+.score-line{ text-align:center; font-weight:700; margin-bottom:14px; font-size:1.1rem;}
+.center-btn{
+  display:block; margin:20px auto 0; padding:12px 26px; border-radius:999px;
+  background:var(--grass); color:white; font-size:1.05rem; box-shadow:var(--shadow);
+}
+
+footer{
+  background:var(--ink); color:white; text-align:center; padding:40px 20px;
+}
+footer .grownups{
+  max-width:600px; margin:0 auto; font-size:.95rem; opacity:0.85; line-height:1.6;
+}
+footer h3{ color:var(--sun); margin-bottom:10px;}
+footer .foot-links{ margin-bottom:18px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+footer .foot-links a{ color:var(--sun); font-weight:700;}
+footer .foot-links a:hover{ text-decoration:underline;}
+
+.visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);}
+
+/* ===================================================
+   Shared happy magic — Star Jar, confetti, bubbles
+   =================================================== */
+.confetti-bit{
+  position:fixed; top:-24px; width:12px; height:12px; border-radius:3px; z-index:9999;
+  opacity:0.95; pointer-events:none;
+  animation-name:scwFall; animation-timing-function:linear; animation-fill-mode:forwards;
+}
+@keyframes scwFall{
+  0%{ transform:translateY(0) rotate(0deg); opacity:1;}
+  85%{ opacity:1;}
+  100%{ transform:translateY(108vh) rotate(720deg); opacity:0;}
+}
+.confetti-bit.scw-sparkle{
+  top:auto; width:14px; height:14px; background:#FFD34D; transform:translate(-50%,-50%) scale(1);
+  animation-name:scwSpark; animation-timing-function:ease-out; animation-fill-mode:forwards;
+  border-radius:50%; box-shadow:0 0 12px 3px rgba(255,211,77,.7);
+}
+@keyframes scwSpark{
+  0%{ opacity:1; transform:translate(-50%,-50%) scale(0.4);}
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(2.2);}
+}
+.scw-badge{
+  position:fixed; top:12px; right:12px; z-index:500;
+  background:var(--sun); color:var(--ink);
+  font-family:'Baloo 2', cursive; font-weight:800; font-size:1.05rem;
+  padding:8px 14px; border-radius:999px; box-shadow:var(--shadow);
+  cursor:pointer; border:3px solid white; user-select:none;
+}
+.scw-badge .scw-count{ font-variant-numeric:tabular-nums; }
+.scw-badge:hover{ transform:scale(1.08); }
+.scw-bounce{ animation:scwBounce .7s ease; }
+@keyframes scwBounce{
+  0%,100%{ transform:scale(1);}
+  40%{ transform:scale(1.35) rotate(-8deg);}
+}
+.scw-bubble{
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(40px);
+  background:white; color:var(--ink); font-weight:700;
+  padding:12px 20px; border-radius:20px; box-shadow:var(--shadow);
+  z-index:600; opacity:0; pointer-events:none;
+  transition:transform .3s ease, opacity .3s ease;
+  border:3px solid var(--bubblegum); max-width:80vw; text-align:center;
+}
+.scw-bubble.scw-show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Extra happy utility bits for pages */
+.rainbow-text{
+  background:linear-gradient(90deg,#FF4D6D,#FF9F43,#FFD34D,#58D68D,#4FC3F7,#A66BF0,#FF4D6D);
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:scwRainbow 6s linear infinite;
+}
+@keyframes scwRainbow{ to{ background-position:300% 0; } }
+.spinner{ display:inline-block; animation:spin 10s linear infinite; }

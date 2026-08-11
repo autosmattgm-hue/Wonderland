@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartoon Corner 📺 — Watch All Your Favorite Shows! | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #videos-land{ background:linear-gradient(180deg,#EAF3FF,#FFFBF2);}
+  .channel-tabs{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;
+  }
+  .channel-tab{
+    padding:10px 18px; border-radius:999px; background:var(--sky-light); font-weight:700;
+  }
+  .channel-tab.active{ background:#FF4D6D; color:white;}
+
+  .tv-wrap{ max-width:640px; margin:0 auto; }
+  .tv{
+    position:relative; border-radius:26px; overflow:hidden; box-shadow:var(--shadow);
+    aspect-ratio:16/10; border:10px solid var(--ink);
+  }
+  .scene{
+    position:absolute; inset:0; display:none;
+  }
+  .scene.active{ display:block; }
+  .tv.paused .scene *{ animation-play-state:paused !important; }
+
+  .tv-controls{ display:flex; justify-content:center; gap:14px; margin-top:18px; }
+  .tv-controls button{
+    padding:10px 22px; border-radius:999px; background:var(--bubblegum); color:white; font-size:1rem; box-shadow:var(--shadow);
+  }
+  .tv-caption{ text-align:center; margin-top:10px; font-weight:700; color:#6a5c85; }
+
+  /* ---- Scene 1: Bouncing Bear ---- */
+  .scn-bear{ background:linear-gradient(180deg,#BEE9FF 0%, #BEE9FF 65%, #8CD98C 65%, #58D68D 100%); }
+  .scn-bear .sun{ position:absolute; top:10%; left:12%; font-size:2.6rem; animation:spin 12s linear infinite; }
+  .scn-bear .bear{ position:absolute; bottom:14%; left:40%; font-size:4rem; animation:bearBounce 1.1s ease-in-out infinite; }
+  .scn-bear .cloud2{ position:absolute; top:14%; font-size:2rem; animation:drift 20s linear infinite; }
+  @keyframes bearBounce{
+    0%,100%{ transform:translateY(0) scaleY(1); }
+    30%{ transform:translateY(-46px) scaleY(1.05); }
+    55%{ transform:translateY(0) scaleY(0.85); }
+    70%{ transform:translateY(-10px) scaleY(1.02); }
+  }
+  @keyframes spin{ from{transform:rotate(0);} to{transform:rotate(360deg);} }
+
+  /* ---- Scene 2: Rocket Ride ---- */
+  .scn-rocket{ background:radial-gradient(circle at 30% 20%, #3a2e6d, #14102b 70%); }
+  .scn-rocket .star{ position:absolute; color:white; animation:twinkle 1.6s ease-in-out infinite; }
+  .scn-rocket .rocket{ position:absolute; font-size:3.6rem; top:40%; left:-15%; animation:rocketFly 5s linear infinite; }
+  .scn-rocket .planet{ position:absolute; font-size:3rem; top:20%; right:10%; animation:spin 18s linear infinite; }
+  @keyframes rocketFly{ from{ left:-15%; transform:rotate(35deg);} to{ left:110%; transform:rotate(35deg);} }
+  @keyframes twinkle{ 0%,100%{opacity:.3;} 50%{opacity:1;} }
+
+  /* ---- Scene 3: Under the Sea ---- */
+  .scn-sea{ background:linear-gradient(180deg,#4FC3F7,#0E86C9); }
+  .scn-sea .fish{ position:absolute; font-size:2.4rem; animation:swim linear infinite; }
+  .scn-sea .bub{ position:absolute; bottom:-40px; font-size:1.2rem; opacity:.8; animation:riseUp linear infinite; }
+  @keyframes swim{ from{ left:-10%;} to{ left:110%;} }
+  @keyframes riseUp{ from{ transform:translateY(0); opacity:.9;} to{ transform:translateY(-320px); opacity:0;} }
+
+  /* ---- Scene 4: Dancing Garden ---- */
+  .scn-garden{ background:linear-gradient(180deg,#DFF4FF 0%,#DFF4FF 55%,#B7EFC5 55%,#58D68D 100%); }
+  .scn-garden .flower{ position:absolute; bottom:8%; font-size:2.6rem; transform-origin:bottom center; animation:sway 2s ease-in-out infinite; }
+  .scn-garden .butterfly{ position:absolute; top:20%; font-size:2rem; animation:flutter 6s ease-in-out infinite; }
+  .scn-garden .gsun{ position:absolute; top:8%; left:8%; font-size:2.4rem; animation:bob 2.4s ease-in-out infinite; }
+  @keyframes sway{ 0%,100%{ transform:rotate(-8deg);} 50%{ transform:rotate(8deg);} }
+  @keyframes flutter{
+    0%{ left:5%; top:20%;} 25%{ left:35%; top:35%;} 50%{ left:65%; top:15%;} 75%{ left:80%; top:40%;} 100%{ left:5%; top:20%;}
+  }
+
+  /* ---- Scene 5: Night Sky Lullaby ---- */
+  .scn-night{ background:linear-gradient(180deg,#1b1740,#3a2e6d); }
+  .scn-night .moon{ position:absolute; top:14%; right:16%; font-size:3.6rem; animation:bob 5s ease-in-out infinite; }
+  .scn-night .nstar{ position:absolute; color:#FFD34D; animation:twinkle 2.4s ease-in-out infinite; }
+  .scn-night .sheep{ position:absolute; bottom:6%; font-size:2rem; animation:driftSlow 22s linear infinite; }
+  @keyframes driftSlow{ from{ left:-10%;} to{ left:110%;} }
+
+  /* ---- YouTube Video Hub ---- */
+  .yt-wrap{ max-width:760px; margin:0 auto; }
+  .yt-video{
+    position:relative; border-radius:22px; overflow:hidden; box-shadow:var(--shadow);
+    border:10px solid var(--ink); background:#000; aspect-ratio:16/9;
+  }
+  .yt-frame{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .yt-title{ text-align:center; font-weight:800; font-size:1.15rem; margin-top:12px; min-height:1.4em;}
+  .yt-chips{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:14px; }
+  .yt-chip{
+    padding:8px 14px; border-radius:999px; background:var(--sky-light); font-weight:700;
+    box-shadow:var(--shadow);
+  }
+  .yt-chip:hover{ transform:translateY(-2px); background:var(--sun); }
+  .yt-controls{ display:flex; gap:12px; justify-content:center; margin-top:18px; flex-wrap:wrap; align-items:center; }
+  .yt-more{
+    display:inline-block; padding:11px 22px; border-radius:999px; background:var(--grass);
+    color:white; font-weight:700; box-shadow:var(--shadow);
+  }
+  .yt-more:hover{ transform:translateY(-2px); }
+  .yt-search{ display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .yt-search input{
+    padding:11px 16px; border-radius:999px; border:3px solid var(--sky);
+    font-family:'Quicksand',sans-serif; font-weight:700; font-size:1rem; min-width:230px; color:var(--ink);
+  }
+  .yt-search button{ padding:11px 22px; border-radius:999px; background:var(--bubblegum); color:white; font-weight:700; box-shadow:var(--shadow); }
+  .yt-tab{ padding:10px 16px; border-radius:999px; background:var(--sky-light); font-weight:700; }
+  .yt-tab.active{ background:#FF4D6D; color:white; }
+  .yt-tab:hover{ transform:translateY(-2px); }
+  .feature-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; max-width:760px; margin:24px auto 0; }
+  .feature-card{
+    background:var(--cream); border:3px solid var(--sun); border-radius:18px; padding:12px;
+    text-align:center; cursor:pointer; box-shadow:var(--shadow); transition:transform .15s; font-weight:700; font-size:.95rem;
+  }
+  .feature-card:hover{ transform:translateY(-4px) rotate(-1deg); }
+  .feature-card .fe{ font-size:2.2rem; }
+  .more-shows{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; max-width:780px; margin:0 auto; }
+  .more-show{
+    padding:13px 8px; border-radius:16px; background:var(--sky-light); font-weight:700;
+    box-shadow:var(--shadow); font-size:.95rem;
+  }
+  .more-show:hover{ transform:translateY(-3px); background:var(--sun); }
+
+  /* ---- Video modal + ad-blocker notice ---- */
+  .ad-note{
+    text-align:center; background:#FFF3CD; border:3px solid #FFC107; color:#5a4d00;
+    border-radius:16px; padding:12px 16px; font-weight:700; margin-top:14px;
+  }
+  .scw-modal{
+    position:fixed; inset:0; background:rgba(20,16,43,.92); z-index:1000;
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .scw-modal.open{ display:flex; animation:popIn .2s ease; }
+  .scw-modal-box{
+    position:relative; width:100%; max-width:780px; background:var(--ink);
+    border:6px solid white; border-radius:24px; padding:16px; box-shadow:0 24px 70px rgba(0,0,0,.55);
+  }
+  .scw-modal-frame{ position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:14px; overflow:hidden; }
+  .scw-modal-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .scw-modal-close{
+    position:absolute; top:-16px; right:-16px; width:46px; height:46px; border-radius:50%;
+    background:var(--bubblegum); color:white; font-size:1.4rem; font-weight:800; box-shadow:var(--shadow); z-index:2;
+  }
+  .scw-modal-title{ color:white; text-align:center; font-weight:800; margin:12px 0 8px; }
+  .scw-modal-controls{ text-align:center; margin-bottom:6px; }
+  .scw-modal-tip{ color:#FFE9A8; text-align:center; font-size:.88rem; opacity:.9; margin:0; }
+
+  /* ---- Episode cards (tap to play, all on page) ---- */
+  .show-videos{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; max-width:780px; margin:16px auto 0; }
+  .video-card{
+    background:white; border-radius:16px; overflow:hidden; box-shadow:var(--shadow);
+    border:3px solid var(--sky-light); transition:transform .15s, border-color .15s;
+    text-align:left; padding:0; cursor:pointer;
+  }
+  .video-card:hover{ transform:translateY(-4px); }
+  .video-card img{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .video-card span{ display:block; padding:8px 10px; font-weight:800; font-size:.86rem; line-height:1.25; }
+  .video-card.on{ border-color:var(--bubblegum); outline:3px solid var(--bubblegum); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6 current" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:120px;height:50px;top:15%;left:-10%;animation-duration:40s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">📺</div>
+    <h1>Cartoon Corner</h1>
+    <p>All your favorite shows &amp; episodes — plus tiny cartoons, pick a channel and watch!</p>
+  </header>
+</div>
+
+<main class="land" id="videos-land">
+
+  <!-- ============ YOUTUBE VIDEO HUB ============ -->
+  <div class="panel">
+    <h2 class="land-title" style="margin-bottom:4px;">🎬 Superstar Video Corner</h2>
+    <p class="land-sub">All your favorite shows &amp; episodes — in one happy place!</p>
+    <div class="channel-tabs" id="show-tabs"></div>
+    <div class="yt-wrap">
+      <div class="yt-video" id="yt-video"></div>
+      <div class="yt-title" id="yt-title"></div>
+      <div class="show-videos" id="show-videos"></div>
+      <div class="yt-controls">
+        <button class="center-btn" id="yt-special" style="margin:0;">🎲 Surprise Me!</button>
+      </div>
+      <p class="ad-note" id="scw-adnote" style="display:none;">If the video screen ever looks blank, an ad blocker is probably stopping it. Please allow (whitelist) this site in your ad blocker, and it will play right here. 💖</p>
+      <p class="tv-caption">Tap any episode card to play it — everything plays right here!</p>
+    </div>
+  </div>
+
+  <!-- ============ MINI SHOWS (original CSS cartoons) ============ -->
+  <div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">🎈 Our Little Mini Shows</h2>
+    <p class="land-sub">Tiny cartoons we made just for you while you pick a big one</p>
+    <div class="channel-tabs">
+      <button class="channel-tab active" data-scene="bear">🐻 Sunny Meadow</button>
+      <button class="channel-tab" data-scene="rocket">🚀 Rocket Ride</button>
+      <button class="channel-tab" data-scene="sea">🐠 Under the Sea</button>
+      <button class="channel-tab" data-scene="garden">🦋 Dancing Garden</button>
+      <button class="channel-tab" data-scene="night">🌙 Night Sky Lullaby</button>
+    </div>
+
+    <div class="tv-wrap">
+      <div class="tv" id="tv">
+        <div class="scene scn-bear active" data-scene="bear">
+          <div class="sun">☀️</div>
+          <div class="cloud2" style="top:10%;">☁️</div>
+          <div class="bear">🐻</div>
+        </div>
+        <div class="scene scn-rocket" data-scene="rocket">
+          <div class="planet">🪐</div>
+          <div class="rocket">🚀</div>
+        </div>
+        <div class="scene scn-sea" data-scene="sea">
+          <div class="fish" style="top:20%; font-size:2rem; animation-duration:6s;">🐠</div>
+          <div class="fish" style="top:45%; animation-duration:9s; animation-delay:-3s;">🐟</div>
+          <div class="fish" style="top:65%; font-size:1.6rem; animation-duration:7s; animation-delay:-1s;">🐡</div>
+        </div>
+        <div class="scene scn-garden" data-scene="garden">
+          <div class="gsun">🌞</div>
+          <div class="flower" style="left:15%;">🌸</div>
+          <div class="flower" style="left:45%; animation-delay:-0.6s;">🌼</div>
+          <div class="flower" style="left:75%; animation-delay:-1.2s;">🌷</div>
+          <div class="butterfly">🦋</div>
+        </div>
+        <div class="scene scn-night" data-scene="night">
+          <div class="moon">🌙</div>
+          <div class="sheep">🐑</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tv-controls">
+      <button id="tv-toggle">⏸️ Pause</button>
+    </div>
+    <p class="tv-caption" id="tv-caption">Sunny Meadow: a happy bear bounces in the sun ☀️</p>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="stories.html">Stories</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">
+    No videos or links send kids away from this page — every episode plays in the player right here. Shows stream from YouTube; if a video ever looks blank, an ad blocker is usually stopping it, so allow (whitelist) this site and it will play. The Mini Shows below are tiny original animations made with CSS. This site never collects or saves anything about your child — stars and favorites live only on this device.
+  </div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+const captions = {
+  bear: "Sunny Meadow: a happy bear bounces in the sun ☀️",
+  rocket: "Rocket Ride: zoom past planets and twinkly stars 🚀",
+  sea: "Under the Sea: friendly fish swim by 🐠",
+  garden: "Dancing Garden: flowers sway and a butterfly flutters by 🦋",
+  night: "Night Sky Lullaby: a sleepy sheep drifts under the moon 🌙"
+};
+const stars = [];
+function addStars(container, count, cls){
+  for(let i=0;i<count;i++){
+    const s = document.createElement('div');
+    s.className = cls;
+    s.textContent = '✦';
+    s.style.left = (Math.random()*94)+'%';
+    s.style.top = (Math.random()*70)+'%';
+    s.style.fontSize = (0.6+Math.random()*0.8)+'rem';
+    s.style.animationDelay = (-Math.random()*2.4)+'s';
+    container.appendChild(s);
+  }
+}
+addStars(document.querySelector('.scn-rocket'), 18, 'star');
+addStars(document.querySelector('.scn-night'), 14, 'nstar');
+
+function addBubbles(){
+  const container = document.querySelector('.scn-sea');
+  for(let i=0;i<10;i++){
+    const b = document.createElement('div');
+    b.className = 'bub';
+    b.textContent = '○';
+    b.style.left = (Math.random()*94)+'%';
+    b.style.animationDuration = (4+Math.random()*3)+'s';
+    b.style.animationDelay = (-Math.random()*6)+'s';
+    container.appendChild(b);
+  }
+}
+addBubbles();
+
+document.querySelectorAll('.channel-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.channel-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+    tab.classList.add('active');
+    const key = tab.dataset.scene;
+    document.querySelector('.scene[data-scene="'+key+'"]').classList.add('active');
+    document.getElementById('tv-caption').textContent = captions[key];
+  });
+});
+
+let playing = true;
+document.getElementById('tv-toggle').addEventListener('click', ()=>{
+  playing = !playing;
+  document.getElementById('tv').classList.toggle('paused', !playing);
+  document.getElementById('tv-toggle').textContent = playing ? '⏸️ Pause' : '▶️ Play';
+});
+</script>
+
+<script>
+/* ================= YOUTUBE VIDEO HUB ================= */
+const shows = [
+  { key:'cocomelon', emoji:'🍉', name:'CoComelon', videos:[
+    ['e_04ZrNroTo','Wheels on the Bus'],
+    ['3G8OSUZgPCw','Beach Boom-Clap Dance'],
+    ['joP2XFA9WGA','Fireflies Lullaby'],
+    ['qXcMNBQnQMM','Songs for Kids (1 hour)'],
+    ['ygcN65SlLFg','Hickory Dickory Dock'],
+    ['_Tr9Ncoo-yw','Are We There Yet?'],
+    ['75hzv1-EELc','Finger Family Halloween']]},
+  { key:'tomjerry', emoji:'🐱', name:'Tom & Jerry', videos:[
+    ['_GE6zf_hH48','Mega Compilation'],
+    ['mXhj7pVJjcU','Golden Era Vol. 7'],
+    ['Gkysb_8N9os','Quiet Please (1945)'],
+    ['Ph7iu3xlpFY','Golden Era Vol. 1'],
+    ['YgDH-GhhqWU','Golden Era Vol. 10'],
+    ['HJFxTsX0Ok0','Doctor Jerry in the House']]},
+  { key:'thomas', emoji:'🚂', name:'Thomas & Friends', videos:[
+    ['LKvh68wL4CM','The Secret Pirate Treasure'],
+    ['g3VImFatobQ','A Big Hello (75 min!)'],
+    ['BzG6yjBkn-Q','Thomas Gets Lost (90 min!)']]},
+  { key:'pjmasks', emoji:'🌙', name:'PJ Masks', videos:[
+    ['P6cTjxyyUIc','Owlette\u2019s Mistake'],
+    ['Bg9qw4GbGfk','PJ Seeker (1 hour)'],
+    ['6zlyJaFGMiM','Armadylan\u2019s Hero Day'],
+    ['gJUTzeDS4qs','New Space Fairy Friend'],
+    ['8YJ4Atl0vh8','Red Light, Green Light'],
+    ['cLShw9pXKB8','Slime Trap Adventure']]},
+  { key:'sofia', emoji:'👑', name:'Sofia the First', videos:[
+    ['UOctVeOug9k','Season 1 Mega Compilation'],
+    ['WEurGXf0grY','Once Upon a Princess'],
+    ['4cHXkb35ckE','The Baker King'],
+    ['eLMh-sC3GmI','Princess Butterfly'],
+    ['_13dpe2WqKY','Great Aunt-Venture'],
+    ['VJAkHWXZPuI','The Royal Ice Dancers']]},
+  { key:'pawpatrol', emoji:'🐾', name:'PAW Patrol', videos:[
+    ['k5-jvNvFDlE','Full Episodes (Official)'],
+    ['24IxnPtts44','Pups Make a Splash'],
+    ['9XQs-6OoDHY','Save the Sea Turtles'],
+    ['aDxVbqSYDYg','The Kitty-tastrophe'],
+    ['MZNTotsZXLY','Bug Rescues (2 hours)'],
+    ['gbsgbcd_-2U','Rescue Wheels Adventures']]},
+  { key:'spidey', emoji:'🕷️', name:'Spidey & Friends', videos:[
+    ['lBdbttgfmRw','Season 1 (2 hours!)'],
+    ['Rj76lv6pfVo','Moon Girl & Hulk'],
+    ['uFs-T_iq6lc','Lights, Sirens, Action'],
+    ['xIQs8pIvPEU','The Ant Thief'],
+    ['APP3pYaN2Cg','Halloween Adventure'],
+    ['PyyIre-u77Q','Team-Up with Thing']]},
+  { key:'peppa', emoji:'🐷', name:'Peppa Pig', videos:[
+    ['2aWUgbdD4L0','Peppa\u2019s Perfume (45 min)'],
+    ['9qShcQMq1cA','The Longest Water Slide'],
+    ['uJ-8ooJKZXo','Easter Chocolate Feast'],
+    ['nVp2gqBOJ10','The Patchwork Blanket'],
+    ['bMsBMOkn39Y','Food-Truck Favourites'],
+    ['T9Xwxlk4Q3A','Swimming Fun']]},
+  { key:'bluey', emoji:'🐶', name:'Bluey', videos:[
+    ['Xw3-3jQQMBk','18 Full Episodes (2 hours)'],
+    ['aP-qKaig84M','Complete Collection'],
+    ['4X5UBti92Ak','Family Time Episodes'],
+    ['8ZhBU5EObcE','The Show (Mother\u2019s Day)'],
+    ['zRbALhXzIa4','Unicorse Adventures'],
+    ['w2sB87jLE1I','Bluey Episodes Live']]},
+  { key:'sesame', emoji:'🐦', name:'Sesame Street', videos:[
+    ['Q934OTUJ-y0','Full Episodes Mega'],
+    ['ymBJC-WbaJQ','Elmo\u2019s World'],
+    ['ECRFNwH_ZGI','Got To Go & More Songs']]},
+  { key:'babyshark', emoji:'🦈', name:'Baby Shark', videos:[
+    ['XqZsoesa55w','Baby Shark Dance'],
+    ['yCjJyiqpAuU','Twinkle Twinkle Star'],
+    ['F4tHL8reNCs','Johny Johny Yes Papa'],
+    ['BG8HLIvuK24','Top 20 Counting Songs'],
+    ['ygcN65SlLFg','Hickory Dickory Dock'],
+    ['ecm9HEFcfdQ','The Family Tree']]},
+  { key:'nursery', emoji:'🎵', name:'Nursery Rhymes', videos:[
+    ['yCjJyiqpAuU','Twinkle Twinkle Little Star'],
+    ['F4tHL8reNCs','Johny Johny Yes Papa'],
+    ['8msljf_aMDs','Family Songs Compilation'],
+    ['ecm9HEFcfdQ','The Family Tree'],
+    ['BG8HLIvuK24','Top 20 Counting Songs'],
+    ['e_04ZrNroTo','Wheels on the Bus']]}
+];
+let curShow = 'cocomelon';
+
+function videoSrc(id){ return 'https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1&modestbranding=1'; }
+function setVideo(id, label){
+  document.getElementById('yt-video').innerHTML =
+    '<iframe class="yt-frame" src="'+videoSrc(id)+'" title="'+label+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+  document.getElementById('yt-title').textContent = label + ' ▶';
+}
+function getShow(k){ return shows.find(s=>s.key===k) || shows[0]; }
+
+function buildShowTabs(){
+  const wrap = document.getElementById('show-tabs');
+  wrap.innerHTML = '';
+  shows.forEach(s=>{
+    const b = document.createElement('button');
+    b.className = 'yt-tab' + (s.key===curShow ? ' active' : '');
+    b.textContent = s.emoji + ' ' + s.name;
+    b.addEventListener('click', ()=>{ curShow = s.key; buildShowTabs(); renderShow(); SCW.sound('pop'); });
+    wrap.appendChild(b);
+  });
+}
+function renderShow(){
+  const s = getShow(curShow);
+  curShow = s.key;
+  buildShowTabs();
+  const first = s.videos[0];
+  setVideo(first[0], first[1]);
+  const grid = document.getElementById('show-videos');
+  grid.innerHTML = '';
+  s.videos.forEach(v=>{
+    const card = document.createElement('button');
+    card.className = 'video-card';
+    card.innerHTML = '<img loading="lazy" src="https://i.ytimg.com/vi/'+v[0]+'/hqdefault.jpg" alt="'+v[1]+'"><span>'+v[1]+'</span>';
+    card.addEventListener('click', ()=>{
+      setVideo(v[0], v[1]);
+      document.querySelectorAll('.video-card').forEach(c=>c.classList.remove('on'));
+      card.classList.add('on');
+      SCW.sound('pop');
+    });
+    grid.appendChild(card);
+  });
+}
+/* (the old tap-to-add-show features were replaced by the built-in episode library) */
+
+document.getElementById('yt-special').addEventListener('click', ()=>{
+  curShow = shows[Math.floor(Math.random()*shows.length)].key;
+  buildShowTabs(); renderShow();
+  SCW.popConfetti(20); SCW.sound('tada');
+  SCW.showMascotSay('Surprise! Let\u2019s watch a new episode! 🎬', 2600);
+});
+
+/* ---- Gentle ad-blocker notice (explains a blank video screen, never leaves the page) ---- */
+function detectAdBlock(){
+  const tester = document.createElement('div');
+  tester.className = 'adsbox ad-placement';
+  tester.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
+  document.body.appendChild(tester);
+  setTimeout(()=>{
+    if(tester.offsetHeight === 0){
+      const note = document.getElementById('scw-adnote');
+      if(note) note.style.display = 'block';
+    }
+    tester.remove();
+  }, 350);
+}
+detectAdBlock();
+
+renderShow();
+</script>
+</body>
+</html>

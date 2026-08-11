@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Land 🎡 | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #games-land{ background:linear-gradient(180deg,#FFF0F6,#FFFBF2);}
+  .game-tabs{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;
+  }
+  .game-tab{
+    padding:10px 18px; border-radius:999px; background:var(--sky-light); font-weight:700;
+  }
+  .game-tab.active{ background:var(--bubblegum); color:white;}
+  .game-view{ display:none; }
+  .game-view.active{ display:block; animation:popIn .25s ease;}
+
+  /* Memory game */
+  .memory-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px; max-width:420px; margin:0 auto;
+  }
+  .mem-card{
+    aspect-ratio:1/1; border-radius:16px; background:var(--grape);
+    display:flex; align-items:center; justify-content:center; font-size:2rem;
+    color:white; box-shadow:var(--shadow); transition:transform .3s;
+  }
+  .mem-card.flipped{ background:white; color:var(--ink);}
+  .mem-card.matched{ background:var(--grass); opacity:0.85;}
+
+  /* Whack a mole */
+  .mole-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:360px; margin:0 auto;
+  }
+  .mole-hole{
+    aspect-ratio:1/1; border-radius:50%; background:#DCC49C; box-shadow:inset 0 6px 0 rgba(0,0,0,0.15);
+    display:flex; align-items:flex-end; justify-content:center; overflow:hidden; font-size:2.2rem;
+  }
+  .mole-hole span{ transform:translateY(100%); transition:transform .15s;}
+  .mole-hole.up span{ transform:translateY(0%);}
+
+  /* Bubble count */
+  .bubble-area{
+    position:relative; height:340px; max-width:600px; margin:0 auto;
+    background:linear-gradient(180deg,#BEE9FF,#EAF9FF);
+    border-radius:20px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .bubble{
+    position:absolute; bottom:-60px; width:60px; height:60px; border-radius:50%;
+    background:rgba(255,255,255,0.85); border:3px solid var(--sky);
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem;
+    color:var(--ink); animation:rise linear forwards;
+  }
+  @keyframes rise{ to{ transform:translateY(-400px);} }
+
+  /* Tic Tac Toe */
+  .ttt-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:300px; margin:0 auto;
+  }
+  .ttt-cell{
+    aspect-ratio:1/1; border-radius:16px; background:var(--sky-light);
+    display:flex; align-items:center; justify-content:center; font-size:2.4rem; font-weight:800;
+    box-shadow:var(--shadow); color:var(--ink);
+  }
+  .ttt-cell:disabled{ cursor:default; }
+  #ttt-msg{ text-align:center; font-weight:700; margin-top:14px; font-size:1.1rem; min-height:1.5em;}
+
+  /* Copy the Pattern (Simon-style) */
+  .simon-grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:14px; max-width:260px; margin:0 auto;
+  }
+  .simon-pad{
+    aspect-ratio:1/1; border-radius:24px; box-shadow:var(--shadow); opacity:.6; transition:opacity .1s, transform .1s;
+  }
+  .simon-pad.lit{ opacity:1; transform:scale(0.96); }
+  .simon-pad.p0{ background:var(--bubblegum); }
+  .simon-pad.p1{ background:var(--grass); }
+  .simon-pad.p2{ background:#4FC3F7; }
+  .simon-pad.p3{ background:var(--sun); }
+
+  /* Catch the Apples */
+  .catch-area{
+    position:relative; height:360px; max-width:620px; margin:0 auto; overflow:hidden;
+    background:linear-gradient(180deg,#BEE9FF 0%, #BEE9FF 52%, #8CD98C 52%, #58D68D 100%);
+    border-radius:20px; box-shadow:var(--shadow);
+  }
+  .catch-basket{ position:absolute; bottom:6px; left:50%; font-size:3.2rem; cursor:pointer; user-select:none; transition:left .06s linear; filter:drop-shadow(0 4px 0 rgba(0,0,0,.12)); }
+  .catch-item{ position:absolute; top:-60px; font-size:1.9rem; pointer-events:none; }
+
+  /* Candy Math */
+  .math-card{
+    text-align:center; font-size:1.9rem; font-weight:800; min-height:96px;
+    display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;
+    background:var(--cream); border-radius:22px; padding:20px; max-width:520px; margin:0 auto; box-shadow:var(--shadow);
+  }
+  .math-emoji{ font-size:1.5rem; }
+  .math-opts{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:420px; margin:18px auto 0; }
+  .math-opt{ padding:16px; border-radius:16px; background:var(--sky-light); font-weight:800; font-size:1.5rem; box-shadow:var(--shadow); }
+  .math-opt.correct{ background:var(--grass); color:white; }
+  .math-opt.wrong{ background:#FF6F6F; color:white; }
+  .math-levels{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+  .math-levels .center-btn{ margin:0 !important; }
+
+  /* Slide Puzzle */
+  .puzzle-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-width:300px; margin:0 auto; }
+  .puz-tile{
+    aspect-ratio:1/1; border-radius:14px; background:var(--grape); color:white;
+    font-size:1.8rem; font-weight:800; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow);
+  }
+  .puz-tile.blank{ background:transparent; box-shadow:none; cursor:default; }
+
+  /* Balloon Pop */
+  .balloon-area{
+    position:relative; height:340px; max-width:620px; margin:0 auto;
+    background:linear-gradient(180deg,#CBF0FF,#EAF9FF);
+    border-radius:20px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .bpop{ position:absolute; left:10%; bottom:-70px; font-size:2.4rem; cursor:pointer; user-select:none; animation:bpopRise linear forwards; }
+  @keyframes bpopRise{ from{ transform:translateY(0);} to{ transform:translateY(-400px);} }
+  .bpop.popped{ opacity:0; transition:opacity .2s; }
+
+  /* Rocky RPS */
+  .rps-stage{ display:flex; gap:20px; justify-content:center; align-items:center; max-width:520px; margin:0 auto; }
+  .rps-side{
+    background:var(--cream); border-radius:22px; padding:16px 22px; text-align:center;
+    font-weight:800; box-shadow:var(--shadow); min-width:132px;
+  }
+  .rps-pick{ font-size:3.4rem; display:block; animation:popIn .3s ease; }
+  .rps-vs{ font-weight:800; font-size:1.4rem; color:#6a5c85; }
+  .rps-btns{ display:flex; gap:14px; justify-content:center; margin-top:18px; }
+  .rps-btn{
+    width:86px; height:86px; border-radius:50%; background:var(--sky-light); font-size:2.6rem;
+    box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center;
+  }
+  .rps-btn:hover{ transform:translateY(-4px); }
+
+  /* Pizza Chef */
+  .pizza-pan{
+    max-width:250px; margin:0 auto; background:#FBEDD5; border-radius:50%; aspect-ratio:1/1;
+    display:flex; align-items:center; justify-content:center; font-size:2.4rem; box-shadow:var(--shadow);
+    border:5px solid #E3C99A;
+  }
+  .pizza-opts{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+  .pizza-opt{
+    width:66px; height:66px; border-radius:16px; background:var(--sky-light); font-size:2rem;
+    box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center;
+  }
+  .pizza-opt:hover{ transform:translateY(-3px); }
+
+  /* Frog Number Hop */
+  .pond{
+    position:relative; height:210px; max-width:520px; margin:0 auto;
+    background:linear-gradient(180deg,#9BE3FA,#3FA7E0); border-radius:24px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .pond .frog{ position:absolute; left:6%; top:118px; font-size:3rem; transition:left .45s ease; }
+  .pond .lily{ position:absolute; right:6%; top:108px; font-size:3.2rem; }
+  .num-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; max-width:420px; margin:16px auto 0; }
+  .num-tile{ padding:14px; border-radius:14px; background:var(--sky-light); font-weight:800; font-size:1.4rem; box-shadow:var(--shadow); }
+  .num-tile.done{ background:var(--grass); color:white; }
+  .num-tile.next{ background:var(--sun); }
+
+  /* Color Mixer */
+  .mix-stage{ display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
+  .mix-circle{ width:74px; height:74px; border-radius:50%; border:4px solid white; box-shadow:var(--shadow); }
+  .mix-plus,.mix-eq{ font-size:1.8rem; font-weight:800; color:#6a5c85; }
+  .mix-quest{ background:#EEE; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.7rem; color:#6a5c85; }
+  .mix-opts{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+  .mix-opt{ width:82px; height:82px; border-radius:50%; border:4px solid white; box-shadow:var(--shadow); }
+  .mix-opt:hover{ transform:scale(1.08); }
+  .mix-opt.correct{ outline:6px solid var(--sun); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1 current" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:120px;height:50px;top:15%;left:-10%;animation-duration:40s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">🎡</div>
+    <h1>Game Land</h1>
+    <p>Pick a game and have fun!</p>
+  </header>
+</div>
+
+<main class="land" id="games-land">
+  <div class="panel">
+    <div class="game-tabs">
+      <button class="game-tab active" data-game="memory">🃏 Memory Match</button>
+      <button class="game-tab" data-game="mole">🐹 Pop-Up Pals</button>
+      <button class="game-tab" data-game="bubble">🔢 Counting Bubbles</button>
+      <button class="game-tab" data-game="ttt">❌⭕ Tic-Tac-Toe</button>
+      <button class="game-tab" data-game="simon">🎵 Copy the Pattern</button>
+      <button class="game-tab" data-game="catch">🍎 Catch the Apples</button>
+      <button class="game-tab" data-game="math">🍭 Candy Math</button>
+      <button class="game-tab" data-game="puzzle">🧩 Slide Puzzle</button>
+      <button class="game-tab" data-game="balloon">🎈 Balloon Pop</button>
+      <button class="game-tab" data-game="rps">🪨✂️📄 Rocky RPS</button>
+      <button class="game-tab" data-game="pizza">🍕 Pizza Chef</button>
+      <button class="game-tab" data-game="frog">🐸 Frog Number Hop</button>
+      <button class="game-tab" data-game="mix">🎨 Color Mixer</button>
+    </div>
+
+    <div class="game-view active" id="view-memory">
+      <p class="score-line">Matches found: <span id="mem-score">0</span> / 6</p>
+      <div class="memory-grid" id="memory-grid"></div>
+      <button class="center-btn" id="mem-reset">🔄 New Game</button>
+    </div>
+
+    <div class="game-view" id="view-mole">
+      <p class="score-line">Score: <span id="mole-score">0</span> &nbsp; Time: <span id="mole-time">20</span>s</p>
+      <div class="mole-grid" id="mole-grid"></div>
+      <button class="center-btn" id="mole-start">▶️ Start</button>
+    </div>
+
+    <div class="game-view" id="view-bubble">
+      <p class="score-line">Pop the numbers in order! Next: <span id="bubble-target">1</span></p>
+      <div class="bubble-area" id="bubble-area"></div>
+      <button class="center-btn" id="bubble-start">▶️ Start</button>
+    </div>
+
+    <div class="game-view" id="view-ttt">
+      <p class="score-line">You are ❌ — take turns with a friend, or play against the computer 🤖</p>
+      <p style="text-align:center;margin-bottom:14px;">
+        <label style="font-weight:700;"><input type="checkbox" id="ttt-vs-cpu" checked> Play vs computer</label>
+      </p>
+      <div class="ttt-grid" id="ttt-grid"></div>
+      <p id="ttt-msg"></p>
+      <button class="center-btn" id="ttt-reset">🔄 New Game</button>
+    </div>
+
+    <div class="game-view" id="view-simon">
+      <p class="score-line">Watch the pattern, then copy it! Round: <span id="simon-round">0</span></p>
+      <div class="simon-grid" id="simon-grid">
+        <div class="simon-pad p0" data-pad="0"></div>
+        <div class="simon-pad p1" data-pad="1"></div>
+        <div class="simon-pad p2" data-pad="2"></div>
+        <div class="simon-pad p3" data-pad="3"></div>
+      </div>
+      <button class="center-btn" id="simon-start">▶️ Start</button>
+    </div>
+
+    <div class="game-view" id="view-catch">
+      <p class="score-line">Score: <span id="catch-score">0</span> &nbsp; Time: <span id="catch-time">45</span>s &nbsp; 🍎=1 ⭐=3 💣=-2</p>
+      <div class="catch-area" id="catch-area"></div>
+      <button class="center-btn" id="catch-start">▶️ Start</button>
+    </div>
+
+    <div class="game-view" id="view-math">
+      <p class="score-line">Question <span id="math-progress">0</span> / 10 &nbsp; ✔ Right: <span id="math-right">0</span></p>
+      <div class="math-card" id="math-card"></div>
+      <div class="math-opts" id="math-opts"></div>
+      <div class="math-levels">
+        <button class="center-btn" data-lvl="0" style="background:var(--bubblegum);">🥄 Easy (1–5)</button>
+        <button class="center-btn" data-lvl="1" style="background:var(--grape);">🍭 Medium (1–10)</button>
+        <button class="center-btn" data-lvl="2" style="background:#FF9F43;">🎂 Big (1–20)</button>
+      </div>
+    </div>
+
+    <div class="game-view" id="view-puzzle">
+      <p class="score-line">Slide the tiles into order 1–8! &nbsp; Moves: <span id="puzzle-moves">0</span></p>
+      <div class="puzzle-grid" id="puzzle-grid"></div>
+      <button class="center-btn" id="puzzle-shuffle">🔀 Shuffle</button>
+    </div>
+
+    <div class="game-view" id="view-balloon">
+      <p class="score-line">Pop balloons! 🎈=1 ⭐🎈=3 &nbsp; Time: <span id="balloon-time">30</span>s &nbsp; Score: <span id="balloon-score">0</span></p>
+      <div class="balloon-area" id="balloon-area"></div>
+      <button class="center-btn" id="balloon-start">▶️ Start</button>
+    </div>
+
+    <div class="game-view" id="view-rps">
+      <p class="score-line">First to 5 wins! &nbsp; You: <span id="rps-you">0</span> &nbsp; Rocky 🤖: <span id="rps-bot">0</span></p>
+      <div class="rps-stage">
+        <div class="rps-side">🧒 You<br><span class="rps-pick" id="rps-yourpick">❓</span></div>
+        <div class="rps-vs">VS</div>
+        <div class="rps-side">🤖 Rocky<br><span class="rps-pick" id="rps-botpick">❓</span></div>
+      </div>
+      <div class="rps-btns">
+        <button class="rps-btn" data-choice="rock">🪨</button>
+        <button class="rps-btn" data-choice="paper">📄</button>
+        <button class="rps-btn" data-choice="scissors">✂️</button>
+      </div>
+      <p id="rps-msg" style="text-align:center;font-weight:700;min-height:1.5em;margin-top:12px;">Pick one to play!</p>
+      <button class="center-btn" id="rps-reset">🔄 Reset</button>
+    </div>
+
+    <div class="game-view" id="view-pizza">
+      <p class="score-line">Build the pizza! Step <span id="pizza-step">1</span> / 6</p>
+      <div class="pizza-pan" id="pizza-pan">🫓</div>
+      <div class="pizza-opts" id="pizza-opts"></div>
+      <p id="pizza-msg" style="text-align:center;font-weight:700;min-height:1.5em;margin-top:12px;">Tap the dough to start!</p>
+      <button class="center-btn" id="pizza-reset">🔄 New Pizza</button>
+    </div>
+
+    <div class="game-view" id="view-frog">
+      <p class="score-line">Hop the frog home! Next number: <span id="frog-next">1</span></p>
+      <div class="pond">
+        <div class="frog" id="pond-frog">🐸</div>
+        <div class="lily">🪷</div>
+      </div>
+      <div class="num-grid" id="num-grid"></div>
+      <button class="center-btn" id="frog-reset" style="margin-top:16px;">🔄 New Game</button>
+    </div>
+
+    <div class="game-view" id="view-mix">
+      <p class="score-line">Color Mixer — Score: <span id="mix-score">0</span></p>
+      <div class="mix-stage">
+        <div class="mix-circle" id="mix-a"></div>
+        <div class="mix-plus">+</div>
+        <div class="mix-circle" id="mix-b"></div>
+        <div class="mix-eq">=</div>
+        <div class="mix-circle mix-quest" id="mix-quest">?</div>
+      </div>
+      <div class="mix-opts" id="mix-opts"></div>
+      <p id="mix-msg" style="text-align:center;font-weight:700;min-height:1.5em;margin-top:12px;">Tap the color they make together!</p>
+      <button class="center-btn" id="mix-reset">🔄 New Mix</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="stories.html">Stories</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">
+    Every game on this page runs right in the browser. No ads, no accounts, nothing is sent anywhere — the stars kids earn are saved only on this device.
+  </div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+/* ============ TAB SWITCHING ============ */
+document.querySelectorAll('.game-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.game-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.game-view').forEach(v=>v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-'+tab.dataset.game).classList.add('active');
+  });
+});
+
+/* ============ MEMORY MATCH ============ */
+const memEmojis = ['🐶','🐱','🐸','🦋','🍓','🌟'];
+let memState = { first:null, second:null, lock:false, found:0 };
+function buildMemory(){
+  memState = { first:null, second:null, lock:false, found:0 };
+  document.getElementById('mem-score').textContent = '0';
+  const deck = [...memEmojis, ...memEmojis].sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML = '';
+  deck.forEach((emo)=>{
+    const card = document.createElement('div');
+    card.className = 'mem-card';
+    card.dataset.emo = emo;
+    card.textContent = '❓';
+    card.addEventListener('click', ()=>flipCard(card));
+    grid.appendChild(card);
+  });
+}
+function flipCard(card){
+  if(memState.lock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  card.classList.add('flipped');
+  card.textContent = card.dataset.emo;
+  if(!memState.first){ memState.first = card; return; }
+  memState.second = card;
+  memState.lock = true;
+  if(memState.first.dataset.emo === memState.second.dataset.emo){
+    memState.first.classList.add('matched');
+    memState.second.classList.add('matched');
+    memState.found++;
+    document.getElementById('mem-score').textContent = memState.found;
+    if(memState.found === memEmojis.length){
+      SCW.sound('tada'); SCW.popConfetti(60); SCW.addStars(5);
+      SCW.showMascotSay('Memory master! You found them all! 🧠✨', 2600);
+    }
+    resetMemTurn();
+  } else {
+    setTimeout(()=>{
+      memState.first.classList.remove('flipped');
+      memState.second.classList.remove('flipped');
+      memState.first.textContent = '❓';
+      memState.second.textContent = '❓';
+      resetMemTurn();
+    },700);
+  }
+}
+function resetMemTurn(){
+  memState.first = null; memState.second = null; memState.lock = false;
+}
+document.getElementById('mem-reset').addEventListener('click', buildMemory);
+buildMemory();
+
+/* ============ POP-UP PALS (whack-a-mole) ============ */
+let moleScore = 0, moleTimer = null, moleTimeLeft = 20, molePlaying=false;
+const moleFaces = ['🐹','🐰','🐿️'];
+function buildMoleGrid(){
+  const grid = document.getElementById('mole-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<9;i++){
+    const hole = document.createElement('div');
+    hole.className = 'mole-hole';
+    const span = document.createElement('span');
+    span.textContent = moleFaces[Math.floor(Math.random()*moleFaces.length)];
+    hole.appendChild(span);
+    hole.addEventListener('click', ()=>{
+      if(hole.classList.contains('up') && molePlaying){
+        moleScore++;
+        document.getElementById('mole-score').textContent = moleScore;
+        hole.classList.remove('up');
+      }
+    });
+    grid.appendChild(hole);
+  }
+}
+buildMoleGrid();
+function popRandomMole(){
+  const holes = document.querySelectorAll('.mole-hole');
+  holes.forEach(h=>h.classList.remove('up'));
+  const pick = holes[Math.floor(Math.random()*holes.length)];
+  pick.classList.add('up');
+}
+document.getElementById('mole-start').addEventListener('click', ()=>{
+  if(molePlaying) return;
+  molePlaying = true;
+  moleScore = 0; moleTimeLeft = 20;
+  document.getElementById('mole-score').textContent = 0;
+  document.getElementById('mole-time').textContent = moleTimeLeft;
+  const popInterval = setInterval(popRandomMole, 700);
+  moleTimer = setInterval(()=>{
+    moleTimeLeft--;
+    document.getElementById('mole-time').textContent = moleTimeLeft;
+    if(moleTimeLeft<=0){
+      clearInterval(moleTimer);
+      clearInterval(popInterval);
+      molePlaying = false;
+      document.querySelectorAll('.mole-hole').forEach(h=>h.classList.remove('up'));
+      const bonus = 1 + Math.floor(moleScore/5);
+      SCW.sound('tada'); SCW.popConfetti(30); SCW.addStars(bonus);
+      SCW.showMascotSay('Great popping! You scored '+moleScore+'! 🐹', 2600);
+    }
+  },1000);
+});
+
+/* ============ COUNTING BUBBLES ============ */
+let bubbleTarget = 1, bubblePlaying = false, bubbleSpawnInt = null;
+function spawnBubble(){
+  const area = document.getElementById('bubble-area');
+  const num = Math.floor(Math.random()*10)+1;
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  b.textContent = num;
+  b.style.left = (Math.random()*80)+'%';
+  const dur = 4 + Math.random()*2;
+  b.style.animationDuration = dur+'s';
+  b.addEventListener('click', ()=>{
+    if(!bubblePlaying) return;
+    if(num === bubbleTarget){
+      bubbleTarget++;
+      document.getElementById('bubble-target').textContent = bubbleTarget > 10 ? '🎉' : bubbleTarget;
+      if(bubbleTarget>10){
+        bubblePlaying = false;
+        clearInterval(bubbleSpawnInt);
+        SCW.sound('tada'); SCW.popConfetti(55); SCW.addStars(5);
+        SCW.showMascotSay('Wheee! You counted all the way to 10! 🔢🎉', 2600);
+      }
+    }
+    b.remove();
+  });
+  area.appendChild(b);
+  setTimeout(()=>b.remove(), dur*1000+100);
+}
+document.getElementById('bubble-start').addEventListener('click', ()=>{
+  document.getElementById('bubble-area').innerHTML='';
+  bubbleTarget = 1;
+  document.getElementById('bubble-target').textContent = 1;
+  bubblePlaying = true;
+  clearInterval(bubbleSpawnInt);
+  bubbleSpawnInt = setInterval(spawnBubble, 650);
+});
+
+/* ============ TIC-TAC-TOE ============ */
+let tttBoard, tttTurn, tttOver;
+function buildTTT(){
+  tttBoard = Array(9).fill(null);
+  tttTurn = 'X';
+  tttOver = false;
+  document.getElementById('ttt-msg').textContent = "Your turn — tap a square!";
+  const grid = document.getElementById('ttt-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<9;i++){
+    const cell = document.createElement('button');
+    cell.className = 'ttt-cell';
+    cell.addEventListener('click', ()=>tttMove(i));
+    grid.appendChild(cell);
+  }
+}
+const tttWins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function tttCheckWin(board, mark){
+  return tttWins.some(line=>line.every(i=>board[i]===mark));
+}
+function tttMove(i){
+  if(tttOver || tttBoard[i] || tttTurn!=='X') return;
+  placeTTT(i,'X');
+  if(tttOver) return;
+  const vsCpu = document.getElementById('ttt-vs-cpu').checked;
+  if(vsCpu){
+    tttTurn = 'O';
+    document.getElementById('ttt-msg').textContent = "Computer is thinking... 🤖";
+    setTimeout(cpuMove, 500);
+  } else {
+    tttTurn = 'O';
+    document.getElementById('ttt-msg').textContent = "Player O's turn!";
+  }
+}
+function placeTTT(i, mark){
+  tttBoard[i] = mark;
+  const cell = document.getElementById('ttt-grid').children[i];
+  cell.textContent = mark === 'X' ? '❌' : '⭕';
+  cell.disabled = true;
+  if(tttCheckWin(tttBoard, mark)){
+    tttOver = true;
+    document.getElementById('ttt-msg').textContent = mark==='X' ? '🎉 You win!' : (document.getElementById('ttt-vs-cpu').checked ? '🤖 Computer wins — good try!' : '🎉 Player O wins!');
+    if(mark==='X'){ SCW.sound('tada'); SCW.popConfetti(45); SCW.addStars(3); }
+  } else if(tttBoard.every(c=>c)){
+    tttOver = true;
+    document.getElementById('ttt-msg').textContent = "🤝 It's a tie!";
+  }
+}
+function cpuMove(){
+  if(tttOver) return;
+  // try to win, then block, then random
+  const empty = tttBoard.map((v,i)=>v?null:i).filter(v=>v!==null);
+  let choice = null;
+  for(const i of empty){ const b=[...tttBoard]; b[i]='O'; if(tttCheckWin(b,'O')){ choice=i; break; } }
+  if(choice===null) for(const i of empty){ const b=[...tttBoard]; b[i]='X'; if(tttCheckWin(b,'X')){ choice=i; break; } }
+  if(choice===null) choice = empty[Math.floor(Math.random()*empty.length)];
+  placeTTT(choice,'O');
+  if(!tttOver){
+    tttTurn='X';
+    document.getElementById('ttt-msg').textContent = "Your turn — tap a square!";
+  }
+}
+document.getElementById('ttt-reset').addEventListener('click', buildTTT);
+buildTTT();
+
+/* ============ COPY THE PATTERN (Simon-style) ============ */
+const simonFreqs = [329.6, 261.6, 392.0, 220.0];
+let simonSeq = [], simonUserStep = 0, simonPlaying=false, simonRound=0, simonAudioCtx=null;
+function simonPlayTone(freq){
+  if(!simonAudioCtx) simonAudioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  const osc = simonAudioCtx.createOscillator();
+  const gain = simonAudioCtx.createGain();
+  osc.type='sine'; osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.2, simonAudioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, simonAudioCtx.currentTime+0.4);
+  osc.connect(gain); gain.connect(simonAudioCtx.destination);
+  osc.start(); osc.stop(simonAudioCtx.currentTime+0.4);
+}
+function litPad(idx, ms){
+  return new Promise(res=>{
+    const pad = document.querySelector('.simon-pad[data-pad="'+idx+'"]');
+    pad.classList.add('lit');
+    simonPlayTone(simonFreqs[idx]);
+    setTimeout(()=>{ pad.classList.remove('lit'); setTimeout(res, ms*0.35); }, ms*0.65);
+  });
+}
+async function playSimonSeq(){
+  simonPlaying = false;
+  for(const idx of simonSeq){ await litPad(idx, 600); }
+  simonPlaying = true;
+  simonUserStep = 0;
+}
+function nextSimonRound(){
+  simonRound++;
+  document.getElementById('simon-round').textContent = simonRound;
+  simonSeq.push(Math.floor(Math.random()*4));
+  playSimonSeq();
+}
+document.querySelectorAll('.simon-pad').forEach(pad=>{
+  pad.addEventListener('click', ()=>{
+    if(!simonPlaying) return;
+    const idx = parseInt(pad.dataset.pad);
+    simonPlayTone(simonFreqs[idx]);
+    pad.classList.add('lit'); setTimeout(()=>pad.classList.remove('lit'),200);
+    if(idx === simonSeq[simonUserStep]){
+      simonUserStep++;
+      if(simonUserStep === simonSeq.length){
+        simonPlaying = false;
+        SCW.sound('pop'); SCW.addStars(1);
+        setTimeout(nextSimonRound, 700);
+      }
+    } else {
+      simonPlaying = false;
+      document.getElementById('simon-round').textContent = simonRound + " — Oops! Tap Start to try again 🎈";
+    }
+  });
+});
+document.getElementById('simon-start').addEventListener('click', ()=>{
+  simonSeq = []; simonRound = 0; simonUserStep = 0;
+  document.getElementById('simon-round').textContent = 0;
+  nextSimonRound();
+});
+
+/* ============ CATCH THE APPLES ============ */
+const catchEmojis = ['🍎','🍑','🍓','🍊','🫐'];
+let catchScore=0, catchTime=45, catchRunning=false, catchInt=null, catchItems=[];
+function catchStart(){
+  const area = document.getElementById('catch-area');
+  area.innerHTML = '<div class="catch-basket" id="catch-basket">🧺</div>';
+  catchScore=0; catchTime=45; catchItems=[];
+  document.getElementById('catch-score').textContent='0';
+  document.getElementById('catch-time').textContent='45';
+  catchRunning=true;
+  function moveBasket(x){
+    const r=area.getBoundingClientRect();
+    const left=Math.max(10, Math.min(r.width-70, x-r.left-35));
+    document.getElementById('catch-basket').style.left=left+'px';
+  }
+  area.onmousemove=function(e){ if(catchRunning) moveBasket(e.clientX); };
+  area.ontouchmove=function(e){ e.preventDefault(); if(catchRunning) moveBasket(e.touches[0].clientX); };
+  document.addEventListener('keydown', catchKey);
+  catchInt = setInterval(function(){
+    if(!catchRunning) return;
+    const r=area.getBoundingClientRect();
+    if(Math.random()<0.55){
+      const item=document.createElement('div');
+      item.className='catch-item';
+      const roll=Math.random();
+      const kind = roll<0.12 ? 'bonus' : (roll<0.2 ? 'bomb' : 'fruit');
+      item.dataset.kind=kind;
+      item.textContent = kind==='bonus' ? '⭐' : (kind==='bomb' ? '💣' : catchEmojis[Math.floor(Math.random()*catchEmojis.length)]);
+      item.style.left=(Math.random()*Math.max(10,r.width-40))+'px';
+      item.style.top='-60px';
+      area.appendChild(item);
+      catchItems.push({el:item, vy:1.6+Math.random()*2, kind:kind});
+    }
+    const basket=document.getElementById('catch-basket');
+    if(!basket) return;
+    catchItems.forEach(function(it){
+      const top=(parseFloat(it.el.style.top)||-60)+it.vy*3.4;
+      it.el.style.top=top+'px';
+      const ir=it.el.getBoundingClientRect();
+      const br=basket.getBoundingClientRect();
+      const areaR=area.getBoundingClientRect();
+      let dead=false;
+      if(ir.top>br.top-12 && ir.top<br.bottom-4 && ir.left>br.left-30 && ir.left<br.right-6){
+        if(it.kind==='fruit'){ catchScore+=1; SCW.sound('pop'); }
+        else if(it.kind==='bonus'){ catchScore+=3; SCW.sound('star'); SCW.popConfetti(10); }
+        else { catchScore=Math.max(0,catchScore-2); SCW.sound('boing'); }
+        it.el.remove(); dead=true;
+        document.getElementById('catch-score').textContent=catchScore;
+      } else if(ir.top>areaR.height+40){ it.el.remove(); dead=true; }
+      it.dead=it.dead||dead;
+    });
+    catchItems=catchItems.filter(function(it){ return !it.dead; });
+  }, 50);
+  const tInt=setInterval(function(){
+    catchTime--;
+    document.getElementById('catch-time').textContent=catchTime;
+    if(catchTime<=0){ clearInterval(tInt); catchEnd(); }
+  },1000);
+}
+function catchKey(e){
+  if(!catchRunning) return;
+  const basket=document.getElementById('catch-basket');
+  const area=document.getElementById('catch-area');
+  if(!basket||!area) return;
+  const w=area.getBoundingClientRect().width;
+  let left=parseFloat(basket.style.left);
+  if(isNaN(left)) left=w/2-35;
+  if(e.key==='ArrowLeft') basket.style.left=Math.max(10,left-26)+'px';
+  if(e.key==='ArrowRight') basket.style.left=Math.min(w-70,left+26)+'px';
+}
+function catchEnd(){
+  catchRunning=false;
+  clearInterval(catchInt);
+  document.removeEventListener('keydown', catchKey);
+  const bonus=Math.floor(catchScore/8);
+  if(bonus>=1){ SCW.sound('tada'); SCW.popConfetti(30); SCW.addStars(bonus); }
+  SCW.showMascotSay('Time up! You caught '+catchScore+' points! 🍎🌟', 2800);
+}
+document.getElementById('catch-start').addEventListener('click', catchStart);
+
+/* ============ CANDY MATH ============ */
+let mathLvl=0, mathIdx=0, mathRight=0, mathLock=false;
+const mathLevels=[[1,5],[1,10],[1,20]];
+function renderMath(){
+  const body=document.getElementById('math-card');
+  const opts=document.getElementById('math-opts');
+  document.getElementById('math-progress').textContent=mathIdx;
+  if(mathIdx>=10){
+    opts.innerHTML='';
+    body.innerHTML='';
+    const done=document.createElement('div');
+    done.style.textAlign='center';
+    done.innerHTML='<div style="font-size:3rem;">🎉</div><div>You answered '+mathRight+' / 10 right!</div>';
+    const again=document.createElement('button');
+    again.className='center-btn'; again.textContent='🔄 Play Again'; again.style.margin='12px auto 0';
+    again.addEventListener('click',function(){ mathIdx=0; mathRight=0; renderMath(); SCW.popConfetti(12); });
+    done.appendChild(again);
+    body.appendChild(done);
+    if(mathRight>0){ SCW.sound('tada'); SCW.popConfetti(30); SCW.addStars(mathRight); }
+    return;
+  }
+  const max=mathLevels[mathLvl][1];
+  const a=1+Math.floor(Math.random()*max);
+  const b=1+Math.floor(Math.random()*max);
+  const ans=a+b;
+  const shown=Math.min(a,10), shown2=Math.min(b,10);
+  body.innerHTML='<span class="math-emoji">'+'🍭'.repeat(shown)+'</span> + <span class="math-emoji">'+'🍬'.repeat(shown2)+'</span> = <span>?</span>';
+  const choices=[ans];
+  let guard=0;
+  while(choices.length<3 && guard<40){
+    guard++;
+    const d=Math.max(0, ans+Math.floor(Math.random()*9)-4);
+    if(choices.indexOf(d)===-1) choices.push(d);
+  }
+  choices.sort(function(){return Math.random()-0.5;});
+  opts.innerHTML='';
+  mathLock=false;
+  choices.forEach(function(v){
+    const bt=document.createElement('button');
+    bt.className='math-opt'; bt.textContent=v;
+    bt.addEventListener('click',function(){
+      if(mathLock) return;
+      mathLock=true;
+      if(v===ans){ bt.classList.add('correct'); mathRight++; SCW.sound('star'); }
+      else{
+        bt.classList.add('wrong');
+        document.querySelectorAll('#math-opts .math-opt').forEach(function(x){ if(parseInt(x.textContent,10)===ans) x.classList.add('correct'); });
+        SCW.sound('boing');
+      }
+      document.getElementById('math-right').textContent=mathRight;
+      setTimeout(renderMath, 900);
+    });
+    opts.appendChild(bt);
+  });
+}
+document.querySelectorAll('.math-levels .center-btn').forEach(function(b){
+  b.addEventListener('click', function(){
+    mathLvl=parseInt(b.dataset.lvl,10); mathIdx=0; mathRight=0;
+    document.getElementById('math-right').textContent=0;
+    renderMath(); SCW.sound('pop');
+  });
+});
+renderMath();
+
+/* ============ SLIDE PUZZLE ============ */
+let puzBoard=[1,2,3,4,5,6,7,8,0], puzMoves=0, puzWon=false;
+function buildPuzzle(board){
+  const grid=document.getElementById('puzzle-grid');
+  grid.innerHTML='';
+  board.forEach(function(v,i){
+    const t=document.createElement('button');
+    t.className='puz-tile'+(v===0?' blank':'');
+    t.textContent=v===0?'':v;
+    t.addEventListener('click', function(){ puzMove(i); });
+    grid.appendChild(t);
+  });
+}
+function puzMove(i){
+  if(puzWon) return;
+  const blank=puzBoard.indexOf(0);
+  const r=Math.floor(i/3), c=i%3, br=Math.floor(blank/3), bc=blank%3;
+  if(Math.abs(r-br)+Math.abs(c-bc)!==1) return;
+  puzBoard[blank]=puzBoard[i]; puzBoard[i]=0;
+  puzMoves++;
+  document.getElementById('puzzle-moves').textContent=puzMoves;
+  buildPuzzle(puzBoard);
+  if(puzBoard.every(function(v,i){ return i===8 ? v===0 : v===i+1; })){
+    puzWon=true;
+    SCW.sound('tada'); SCW.popConfetti(60); SCW.addStars(5);
+    SCW.showMascotSay('Puzzle solved in '+puzMoves+' moves! 🧩🌈', 3000);
+  }
+}
+function shufflePuzzle(){
+  puzBoard=[1,2,3,4,5,6,7,8,0];
+  for(let i=0;i<400;i++){
+    const blank=puzBoard.indexOf(0);
+    const r=Math.floor(blank/3), c=blank%3;
+    const moves=[];
+    if(r>0) moves.push(blank-3);
+    if(r<2) moves.push(blank+3);
+    if(c>0) moves.push(blank-1);
+    if(c<2) moves.push(blank+1);
+    const pick=moves[Math.floor(Math.random()*moves.length)];
+    puzBoard[blank]=puzBoard[pick]; puzBoard[pick]=0;
+  }
+  puzMoves=0; puzWon=false;
+  document.getElementById('puzzle-moves').textContent='0';
+  buildPuzzle(puzBoard);
+}
+document.getElementById('puzzle-shuffle').addEventListener('click', shufflePuzzle);
+shufflePuzzle();
+
+/* ============ BALLOON POP ============ */
+let balScore=0, balTime=30, balRunning=false, balSpawnInt=null, balTimer=null;
+function balStart(){
+  const area=document.getElementById('balloon-area');
+  area.innerHTML='';
+  balScore=0; balTime=30;
+  document.getElementById('balloon-score').textContent='0';
+  document.getElementById('balloon-time').textContent='30';
+  balRunning=true;
+  balSpawnInt=setInterval(function(){
+    if(!balRunning) return;
+    const area2=document.getElementById('balloon-area');
+    const b=document.createElement('button');
+    b.className='bpop';
+    const star=Math.random()<0.18;
+    b.textContent=star?'⭐🎈':'🎈';
+    b.style.left=(5+Math.random()*85)+'%';
+    const dur=3.5+Math.random()*3.5;
+    b.style.animationDuration=dur+'s';
+    b.dataset.bonus=star?'1':'0';
+    b.addEventListener('click', function(){ popBalloon(b); });
+    area2.appendChild(b);
+    setTimeout(function(){ if(b.parentNode) b.remove(); }, dur*1000+200);
+  }, 520);
+  balTimer=setInterval(function(){
+    balTime--;
+    document.getElementById('balloon-time').textContent=balTime;
+    if(balTime<=0){ balEnd(); }
+  },1000);
+}
+function popBalloon(b){
+  if(!balRunning) return;
+  if(b.classList.contains('popped')) return;
+  balScore += b.dataset.bonus==='1' ? 3 : 1;
+  document.getElementById('balloon-score').textContent=balScore;
+  b.classList.add('popped');
+  SCW.sound(b.dataset.bonus==='1'?'star':'pop');
+  if(b.dataset.bonus==='1') SCW.popConfetti(12);
+  setTimeout(function(){ if(b.parentNode) b.remove(); }, 220);
+}
+function balEnd(){
+  balRunning=false;
+  clearInterval(balSpawnInt);
+  clearInterval(balTimer);
+  const bonus=Math.floor(balScore/5);
+  if(bonus>=1){ SCW.sound('tada'); SCW.popConfetti(40); SCW.addStars(bonus); }
+  SCW.showMascotSay('Pop! Pop! You scored '+balScore+' points! 🎈💥', 2800);
+}
+document.getElementById('balloon-start').addEventListener('click', balStart);
+
+/* ============ ROCKY RPS ============ */
+const rpsMap={ rock:['🪨','Rock'], paper:['📄','Paper'], scissors:['✂️','Scissors'] };
+const rpsBeats={ rock:'scissors', scissors:'paper', paper:'rock' };
+let rpsYou=0, rpsBot=0;
+function playRPS(choice){
+  const botChoice=['rock','paper','scissors'][Math.floor(Math.random()*3)];
+  document.getElementById('rps-yourpick').textContent=rpsMap[choice][0];
+  document.getElementById('rps-botpick').textContent=rpsMap[botChoice][0];
+  let msg;
+  if(choice===botChoice){ msg='Tie! Tap again 🙂'; SCW.sound('boing'); }
+  else if(rpsBeats[choice]===botChoice){ msg='You win the round! 🎉'; rpsYou++; SCW.sound('star'); SCW.popConfetti(10); }
+  else { msg='Rocky wins the round 🤖'; rpsBot++; SCW.sound('pop'); }
+  document.getElementById('rps-you').textContent=rpsYou;
+  document.getElementById('rps-bot').textContent=rpsBot;
+  document.getElementById('rps-msg').textContent=msg+'  ('+rpsMap[choice][1]+' vs '+rpsMap[botChoice][1]+')';
+  if(rpsYou>=5){
+    SCW.sound('tada'); SCW.popConfetti(80); SCW.addStars(5);
+    SCW.showMascotSay('You beat Rocky! Best of five champion! 🏆', 3200);
+    rpsYou=0; rpsBot=0;
+    document.getElementById('rps-you').textContent=0;
+    document.getElementById('rps-bot').textContent=0;
+  } else if(rpsBot>=5){
+    SCW.sound('pop');
+    SCW.showMascotSay('Rocky wins the match — try again! 🤖🔄', 2800);
+    rpsYou=0; rpsBot=0;
+    document.getElementById('rps-you').textContent=0;
+    document.getElementById('rps-bot').textContent=0;
+  }
+}
+document.querySelectorAll('.rps-btn').forEach(function(b){
+  b.addEventListener('click', function(){ playRPS(b.dataset.choice); });
+});
+document.getElementById('rps-reset').addEventListener('click', function(){
+  rpsYou=0; rpsBot=0;
+  document.getElementById('rps-you').textContent=0;
+  document.getElementById('rps-bot').textContent=0;
+  document.getElementById('rps-msg').textContent='Pick one to play!';
+  document.getElementById('rps-yourpick').textContent='❓';
+  document.getElementById('rps-botpick').textContent='❓';
+});
+
+/* ============ PIZZA CHEF ============ */
+const pizzaSteps=[
+  {e:'🫓', label:'Dough'},
+  {e:'🍅', label:'Tomato sauce'},
+  {e:'🧀', label:'Cheese'},
+  {e:'🍕', label:'Pepperoni'},
+  {e:'🍄', label:'Mushrooms'},
+  {e:'✨', label:'Bake it!'}
+];
+const pizzaOps=['🫓','🍅','🧀','🍕','🍄','✨','🥓','🫑'];
+let pizzaStep=0;
+function renderPizza(){
+  const pan=document.getElementById('pizza-pan');
+  const msg=document.getElementById('pizza-msg');
+  document.getElementById('pizza-step').textContent=Math.min(pizzaStep+1,6);
+  if(pizzaStep>=pizzaSteps.length){
+    pan.textContent='🍕';
+    msg.textContent='Hooray! Pizza time! 🎉';
+  } else {
+    const st=pizzaSteps[pizzaStep];
+    pan.textContent = pizzaSteps.slice(0,pizzaStep).map(s=>s.e).join('') || '🫓';
+    msg.textContent='Tap the '+st.label+'!';
+  }
+  const opts=document.getElementById('pizza-opts');
+  opts.innerHTML='';
+  pizzaOps.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='pizza-opt';
+    b.textContent=o;
+    b.addEventListener('click',()=>{
+      if(pizzaStep>=pizzaSteps.length) return;
+      if(o===pizzaSteps[pizzaStep].e){
+        pizzaStep++;
+        SCW.sound('pop');
+        renderPizza();
+        if(pizzaStep===pizzaSteps.length){
+          SCW.sound('tada'); SCW.popConfetti(55); SCW.addStars(3);
+          SCW.showMascotSay('Delicious! You made a pizza, chef! 👨‍🍳🍕', 2800);
+        }
+      } else {
+        SCW.sound('boing');
+        document.getElementById('pizza-msg').textContent='Not that one — find the '+pizzaSteps[pizzaStep].label+'!';
+      }
+    });
+    opts.appendChild(b);
+  });
+}
+document.getElementById('pizza-reset').addEventListener('click',()=>{ pizzaStep=0; renderPizza(); });
+renderPizza();
+
+/* ============ FROG NUMBER HOP ============ */
+let frogNums=[], frogNext=1;
+function buildFrog(){
+  frogNums=[1,2,3,4,5,6,7,8,9,10].sort(()=>Math.random()-0.5);
+  frogNext=1;
+  document.getElementById('frog-next').textContent='1';
+  document.getElementById('pond-frog').style.left='6%';
+  const grid=document.getElementById('num-grid');
+  grid.innerHTML='';
+  frogNums.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='num-tile'+ (n===1?' next':'');
+    b.textContent=n;
+    b.addEventListener('click',()=>frogTap(b,n));
+    grid.appendChild(b);
+  });
+}
+function frogTap(btn,n){
+  if(n===frogNext){
+    btn.classList.add('done');
+    btn.classList.remove('next');
+    frogNext++;
+    document.getElementById('pond-frog').style.left=(6+(frogNext-1)*8)+'%';
+    if(frogNext>10){
+      document.getElementById('pond-frog').style.left='72%';
+      document.getElementById('frog-next').textContent='🎉';
+      SCW.sound('tada'); SCW.popConfetti(55); SCW.addStars(3);
+      SCW.showMascotSay('Ribbit! The frog made it home! 🐸🪷', 2600);
+      return;
+    }
+    document.getElementById('frog-next').textContent=frogNext;
+    SCW.sound('pop');
+    document.querySelectorAll('.num-tile').forEach(t=>t.classList.toggle('next', parseInt(t.textContent,10)===frogNext));
+  } else {
+    SCW.sound('boing');
+    SCW.showMascotSay('Find the '+frogNext+' next! 🔢', 1200);
+  }
+}
+document.getElementById('frog-reset').addEventListener('click', buildFrog);
+buildFrog();
+
+/* ============ COLOR MIXER ============ */
+const mixRecipes=[
+  {a:'#FF4D6D', b:'#4FC3F7', r:'Purple! 💜', c:'#A66BF0'},
+  {a:'#FF4D6D', b:'#FFD34D', r:'Orange! 🧡', c:'#FF9F43'},
+  {a:'#4FC3F7', b:'#FFD34D', r:'Green! 💚', c:'#58D68D'},
+  {a:'#FF4D6D', b:'#FFFFFF', r:'Pink! 🩷', c:'#FF9FC5'},
+  {a:'#58D68D', b:'#4FC3F7', r:'Teal! 🩵', c:'#37B5A3'},
+  {a:'#A66BF0', b:'#FFD34D', r:'Sunshine Gold! 🧡', c:'#E8B13A'}
+];
+let mixIdx=0, mixScore=0;
+function renderMix(){
+  document.getElementById('mix-score').textContent=mixScore;
+  const r=mixRecipes[mixIdx%mixRecipes.length];
+  document.getElementById('mix-a').style.background=r.a;
+  document.getElementById('mix-b').style.background=r.b;
+  document.getElementById('mix-quest').style.background='#EEE';
+  document.getElementById('mix-quest').textContent='?';
+  const pool=[r.a, r.b, '#FF9F43','#58D68D','#4FC3F7','#A66BF0','#FF4D6D','#37B5A3'];
+  const others=[];
+  pool.forEach(c=>{ if(c!==r.c && others.indexOf(c)===-1) others.push(c); });
+  const opts=[r.c, others[0], others[1]||others[0]].sort(()=>Math.random()-0.5);
+  const wrap=document.getElementById('mix-opts');
+  wrap.innerHTML='';
+  opts.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='mix-opt';
+    b.style.background=c;
+    b.addEventListener('click',()=>{
+      if(c===r.c){
+        b.classList.add('correct');
+        document.getElementById('mix-quest').style.background=r.c;
+        document.getElementById('mix-quest').textContent='🎉';
+        mixScore++;
+        document.getElementById('mix-score').textContent=mixScore;
+        SCW.sound('star'); SCW.popConfetti(12);
+        document.getElementById('mix-msg').textContent=r.r+' You made a new color!';
+        if(mixScore>0 && mixScore%4===0){
+          SCW.sound('tada'); SCW.addStars(1);
+        }
+        setTimeout(()=>{ mixIdx++; renderMix(); }, 950);
+      } else {
+        SCW.sound('boing');
+        document.getElementById('mix-msg').textContent='Try again! Look at the two colors and pick what they make together! 🎨';
+      }
+    });
+    wrap.appendChild(b);
+  });
+}
+document.getElementById('mix-reset').addEventListener('click',()=>{ mixScore=0; mixIdx=0; renderMix(); });
+renderMix();
+</script>
+</body>
+</html>

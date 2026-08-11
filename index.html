@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunny Cloud Wonderland 🌈</title>
+<meta name="description" content="A magical online park for kids — games, cartoons, stories, coloring, music and more!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  .sky-bg{ padding-bottom:0; }
+  .map-wrap{ padding-top:0; }
+  .why-row{
+    max-width:1000px; margin:0 auto 60px; padding:0 20px;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px;
+  }
+  .why-card{
+    background:white; border-radius:22px; padding:20px; text-align:center; box-shadow:var(--shadow);
+  }
+  .why-card .emoji{ font-size:2.2rem; }
+  .why-card h4{ margin:8px 0 4px; }
+  .why-card p{ margin:0; font-size:.9rem; color:#6a5c85; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5 current" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:120px;height:50px;top:10%;left:-10%;animation-duration:38s;"></div>
+  <div class="cloud" style="width:160px;height:60px;top:25%;left:-15%;animation-duration:52s;animation-delay:-10s;"></div>
+  <div class="cloud" style="width:90px;height:40px;top:5%;left:-8%;animation-duration:30s;animation-delay:-20s;"></div>
+
+  <header class="hero">
+    <div class="mascot" id="sunny-unicorn" role="button" tabindex="0" aria-label="Sunny the unicorn — tap me!">🦄</div>
+    <h1>Sunny Cloud Wonderland</h1>
+    <p>A magical park just for kids — games, your favorite cartoon shows, stories, colors, and songs!</p>
+    <br>
+    <a href="games.html" class="cta">Let's Play! →</a>
+  </header>
+
+  <div class="map-wrap">
+    <div class="map-grid">
+      <a class="land-pin p1" href="games.html">
+        <span class="icon">🎡</span>
+        <h3>Game Land</h3>
+        <p>Play, match, and win!</p>
+      </a>
+      <a class="land-pin p6" href="videos.html">
+        <span class="icon">📺</span>
+        <h3>Cartoon Corner</h3>
+        <p>CoComelon, PAW Patrol &amp; more!</p>
+      </a>
+      <a class="land-pin p2" href="stories.html">
+        <span class="icon">🌳</span>
+        <h3>Story Forest</h3>
+        <p>Cozy tales to read</p>
+      </a>
+      <a class="land-pin p3" href="coloring.html">
+        <span class="icon">🏰</span>
+        <h3>Color Castle</h3>
+        <p>Paint fun pictures</p>
+      </a>
+      <a class="land-pin p4" href="music.html">
+        <span class="icon">🎪</span>
+        <h3>Music Meadow</h3>
+        <p>Make silly songs</p>
+      </a>
+      <a class="land-pin p5" href="fun-zone.html">
+        <span class="icon">🎉</span>
+        <h3>Fun Zone</h3>
+        <p>Jokes, riddles &amp; quizzes</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<main>
+  <h2 class="land-title" style="margin-top:50px;">Why kids (and grown-ups) love it here</h2>
+  <p class="land-sub">Everything runs right in your browser</p>
+  <div class="why-row">
+    <div class="why-card">
+      <div class="emoji">🚫📢</div>
+      <h4>No Ads, Ever</h4>
+      <p>Nothing to click, buy, or watch — just play.</p>
+    </div>
+    <div class="why-card">
+      <div class="emoji">🔒</div>
+      <h4>Nothing Saved</h4>
+      <p>No sign-ups, no accounts, no data collected.</p>
+    </div>
+    <div class="why-card">
+      <div class="emoji">🧸</div>
+      <h4>Made for Little Hands</h4>
+      <p>Big buttons, bright colors, simple taps.</p>
+    </div>
+    <div class="why-card">
+      <div class="emoji">🌈</div>
+      <h4>Six Lands to Explore</h4>
+      <p>Games, cartoons, stories, art, music, and jokes.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="games.html">Games</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="stories.html">Stories</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">
+    Sunny Cloud Wonderland is a cozy, ad-free play space. Cartoon Corner streams kids' shows straight from YouTube inside the page — buttons marked "More on YouTube" open a new tab that grown-ups can check. Every game, story, coloring page, and song runs right in the browser. There are no accounts, nothing is sent anywhere, and the only thing ever saved is the star count, which stays on this device.
+  </div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+const scwMascot = document.getElementById('sunny-unicorn');
+if(scwMascot){
+  const scwLines = ['Giggle! 🦄✨','I love it here! 🌈','Sparkle sparkle! ⭐','You found my magic! 🎉','Again! Again! 🥳'];
+  function scwMagic(){
+    SCW.sound('win');
+    SCW.popConfetti(45);
+    SCW.showMascotSay(scwLines[Math.floor(Math.random()*scwLines.length)], 2200);
+  }
+  scwMascot.addEventListener('click', scwMagic);
+  scwMascot.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); scwMagic(); } });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Castle 🏰 | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #color-land{ background:linear-gradient(180deg,#F5F0FF,#FFFBF2);}
+  .color-wrap{ display:flex; flex-wrap:wrap; gap:30px; justify-content:center; align-items:flex-start;}
+  .palette{ display:flex; flex-wrap:wrap; gap:10px; max-width:200px;}
+  .swatch{ width:38px; height:38px; border-radius:50%; box-shadow:var(--shadow); border:3px solid white;}
+  .swatch.selected{ border-color:var(--ink);}
+  .coloring-pic{ width:280px; height:280px;}
+  .coloring-pic path, .coloring-pic circle, .coloring-pic polygon{ cursor:pointer; transition:fill .1s;}
+  .picture-picker{ display:flex; gap:10px; margin-bottom:16px; justify-content:center; flex-wrap:wrap;}
+  .picture-picker button{ padding:8px 16px; border-radius:999px; background:var(--sky-light); font-weight:700;}
+  .picture-picker button.active{ background:#FF9F43; color:white;}
+  .clear-btn{ padding:8px 16px; border-radius:999px; background:#FF6F6F; color:white; font-weight:700; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3 current" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:120px;height:50px;top:15%;left:-10%;animation-duration:40s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">🏰</div>
+    <h1>Color Castle</h1>
+    <p>Tap a color, then tap the picture!</p>
+  </header>
+</div>
+
+<main class="land" id="color-land">
+  <div class="panel">
+    <div class="picture-picker" id="picture-picker">
+      <button class="active" data-pic="star">⭐ Star</button>
+      <button data-pic="flower">🌸 Flower</button>
+      <button data-pic="rocket">🚀 Rocket</button>
+      <button data-pic="heart">💛 Heart</button>
+      <button data-pic="butterfly">🦋 Butterfly</button>
+      <button data-pic="sun">☀️ Sun</button>
+      <button data-pic="rainbow">🌈 Rainbow</button>
+      <button data-pic="cat">🐱 Cat</button>
+      <button data-pic="icecream">🍦 Ice Cream</button>
+      <button data-pic="dino">🦖 Dino</button>
+      <button data-pic="castle">🏰 Castle</button>
+    </div>
+    <div class="color-wrap">
+      <div>
+        <div class="palette" id="palette"></div>
+        <button class="clear-btn" id="clear-pic">🧹 Clear Colors</button>
+        <button class="clear-btn" id="magic-fill" style="background:var(--grape); margin-left:8px;">🪄 Magic Rainbow Fill</button>
+      </div>
+      <div id="pic-holder"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="stories.html">Stories</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">
+    Coloring pages are simple original line-art SVGs, colored entirely in the browser. Tap the Magic Rainbow Fill wand for a surprise of colors (and a star reward!). Nothing is saved after you close the tab.
+  </div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+const colorList = ['#FF6FA3','#FFD34D','#58D68D','#4FC3F7','#A66BF0','#FF9F43','#FF4D4D','#3A2E4D'];
+let selectedColor = colorList[0];
+function buildPalette(){
+  const pal = document.getElementById('palette');
+  pal.innerHTML = '';
+  colorList.forEach((c,i)=>{
+    const sw = document.createElement('div');
+    sw.className = 'swatch'+(i===0?' selected':'');
+    sw.style.background = c;
+    sw.addEventListener('click', ()=>{
+      document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('selected'));
+      sw.classList.add('selected');
+      selectedColor = c;
+    });
+    pal.appendChild(sw);
+  });
+}
+buildPalette();
+
+const pics = {
+  star: `<svg class="coloring-pic" viewBox="0 0 200 200"><polygon points="100,10 123,72 190,72 136,111 156,175 100,136 44,175 64,111 10,72 77,72" fill="white" stroke="#3A2E4D" stroke-width="4"/></svg>`,
+  flower: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <circle cx="100" cy="60" r="28" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="140" cy="100" r="28" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="140" r="28" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="60" cy="100" r="28" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="100" r="22" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`,
+  rocket: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <path d="M100 10 C130 50 130 110 100 140 C70 110 70 50 100 10 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="70,110 40,160 80,140" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="130,110 160,160 120,140" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="70" r="14" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="85,140 115,140 100,175" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`,
+  heart: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <path d="M100 175 C40 130 15 90 30 55 C42 25 80 20 100 55 C120 20 158 25 170 55 C185 90 160 130 100 175 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`,
+  butterfly: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <path d="M100 40 C80 10 20 10 15 55 C12 90 60 100 100 80 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <path d="M100 40 C120 10 180 10 185 55 C188 90 140 100 100 80 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <path d="M100 80 C80 100 40 120 45 150 C50 175 85 165 100 130 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <path d="M100 80 C120 100 160 120 155 150 C150 175 115 165 100 130 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="96" y="35" width="8" height="100" rx="4" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`,
+  sun: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="38" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="100,6 109,38 91,38"/>
+      <polygon points="194,100 162,109 162,91"/>
+      <polygon points="100,194 91,162 109,162"/>
+      <polygon points="6,100 38,91 38,109"/>
+      <rect x="140" y="20" width="16" height="16" rx="3" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="169" y="58" width="16" height="16" rx="3" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="140" y="164" width="16" height="16" rx="3" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="15" y="58" width="16" height="16" rx="3" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <path d="M86 112 Q100 124 114 112" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+    </svg>`,
+  rainbow: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <circle cx="100" cy="150" r="85" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="150" r="68" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="150" r="51" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="150" r="34" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="150" r="17" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`,
+  cat: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <polygon points="48,58 34,12 78,38"/>
+      <polygon points="152,58 166,12 122,38"/>
+      <circle cx="100" cy="86" r="55" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="80" cy="76" r="7" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="120" cy="76" r="7" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="100,96 92,108 108,108"/>
+      <path d="M78 118 Q86 126 94 120" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+      <path d="M122 118 Q114 126 106 120" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+      <path d="M45 96 L85 104" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+      <path d="M45 112 L83 112" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+      <path d="M155 96 L115 104" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+      <path d="M155 112 L117 112" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+    </svg>`,
+  icecream: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <circle cx="100" cy="62" r="42" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="70" cy="100" r="38" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="130" cy="100" r="38" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="100,170 60,195 140,195" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="100" cy="20" r="12" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <path d="M78 86 Q52 106 50 132" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+      <path d="M122 86 Q148 106 150 132" fill="none" stroke="#3A2E4D" stroke-width="4" stroke-linecap="round"/>
+    </svg>`,
+  dino: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <path d="M30 140 C25 95 85 68 130 72 C160 75 176 98 176 120 C176 140 152 152 122 152 L48 152 C38 152 31 150 30 140 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <path d="M34 140 C16 126 10 102 24 88 C16 112 22 134 44 144 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="152" cy="80" r="16" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="148" cy="76" r="4" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="82,74 90,48 100,74"/>
+      <polygon points="108,70 118,44 126,70"/>
+      <rect x="66" y="148" width="14" height="38" rx="6" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="108" y="148" width="14" height="38" rx="6" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="145" y="92" width="10" height="30" rx="5" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`,
+  castle: `<svg class="coloring-pic" viewBox="0 0 200 200">
+      <rect x="70" y="95" width="60" height="78" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="18" y="40" width="46" height="133" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <rect x="136" y="40" width="46" height="133" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <polygon points="25,40 25,22 33,22 33,40 41,40 41,22 49,22 49,40 56,40 56,22 64,22 64,40" fill="white" stroke="#3A2E4D" stroke-width="3"/>
+      <polygon points="143,40 143,22 151,22 151,40 159,40 159,22 167,22 167,40 175,40 175,22 184,22 184,40" fill="white" stroke="#3A2E4D" stroke-width="3"/>
+      <path d="M88 173 L88 128 Q100 112 112 128 L112 173 Z" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="38" cy="78" r="8" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+      <circle cx="160" cy="78" r="8" fill="white" stroke="#3A2E4D" stroke-width="4"/>
+    </svg>`
+};
+function loadPic(name){
+  document.getElementById('pic-holder').innerHTML = pics[name];
+  document.querySelectorAll('.coloring-pic path, .coloring-pic circle, .coloring-pic polygon, .coloring-pic rect').forEach(shape=>{
+    shape.addEventListener('click', ()=>{ shape.setAttribute('fill', selectedColor); });
+  });
+}
+document.querySelectorAll('.picture-picker button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.picture-picker button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    loadPic(btn.dataset.pic);
+  });
+});
+document.getElementById('clear-pic').addEventListener('click', ()=>{
+  document.querySelectorAll('.coloring-pic path, .coloring-pic circle, .coloring-pic polygon, .coloring-pic rect').forEach(shape=>{
+    shape.setAttribute('fill','white');
+  });
+});
+document.getElementById('magic-fill').addEventListener('click', ()=>{
+  const shapes = document.querySelectorAll('.coloring-pic path, .coloring-pic circle, .coloring-pic polygon, .coloring-pic rect');
+  const happyPalette = ['#FF6FA3','#FFD34D','#58D68D','#4FC3F7','#A66BF0','#FF9F43','#37B5A3','#FF4D6D'];
+  shapes.forEach(shape=>{ shape.setAttribute('fill', happyPalette[Math.floor(Math.random()*happyPalette.length)]); });
+  SCW.sound('tada'); SCW.popConfetti(35); SCW.addStars(2);
+  SCW.showMascotSay('Rainbow magic! So pretty! 🌈✨', 2400);
+});
+loadPic('star');
+</script>
+</body>
+</html>
