@@ -180,6 +180,19 @@
   .mix-opt{ width:82px; height:82px; border-radius:50%; border:4px solid white; box-shadow:var(--shadow); }
   .mix-opt:hover{ transform:scale(1.08); }
   .mix-opt.correct{ outline:6px solid var(--sun); }
+
+  /* ---- shared styles for the new mini-games ---- */
+  .ggrid{ display:grid; gap:8px; max-width:380px; margin:0 auto; }
+  .gcell{ aspect-ratio:1/1; border-radius:14px; background:var(--sky-light); box-shadow:var(--shadow); font-weight:800; font-size:1.3rem; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .grow{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; align-items:center; }
+  .gpick{ min-width:64px; padding:12px 14px; border-radius:14px; background:var(--sky-light); font-weight:800; font-size:1.15rem; box-shadow:var(--shadow); }
+  .gmsg{ text-align:center; font-weight:700; min-height:1.5em; margin-top:12px; }
+  .gcell.found{ background:var(--grass); color:white; }
+  .gcell.boom{ background:#FF6F6F; color:white; }
+  .gcell.gone{ opacity:.3; }
+  .dice-row{ display:flex; gap:14px; justify-content:center; align-items:center; font-size:3rem; color:var(--ink); }
+  .race-lane{ display:flex; justify-content:center; gap:4px; margin-top:16px; }
+  .race-lane span{ font-size:1.6rem; }
 </style>
 </head>
 <body>
@@ -195,6 +208,7 @@
   <a class="balloon-btn b8" href="animals.html">🦁 Animals</a>
   <a class="balloon-btn b9" href="space.html">⭐ Space</a>
   <a class="balloon-btn b10" href="experiments.html">🧪 Science</a>
+  <a class="balloon-btn b11" href="carnival.html">🎪 Carnival</a>
 </nav>
 
 <div class="sky-bg">
@@ -222,6 +236,16 @@
       <button class="game-tab" data-game="pizza">🍕 Pizza Chef</button>
       <button class="game-tab" data-game="frog">🐸 Frog Number Hop</button>
       <button class="game-tab" data-game="mix">🎨 Color Mixer</button>
+      <button class="game-tab" data-game="starfind">🗺️ Star Finder</button>
+      <button class="game-tab" data-game="numtap">🔢 Number Tap</button>
+      <button class="game-tab" data-game="odd">🎯 Odd One Out</button>
+      <button class="game-tab" data-game="dice">🎲 Roll &amp; Add</button>
+      <button class="game-tab" data-game="turtle">🐢 Turtle Race</button>
+      <button class="game-tab" data-game="tones">🎵 Repeat the Tune</button>
+      <button class="game-tab" data-game="evenodd">🧲 Even or Odd</button>
+      <button class="game-tab" data-game="letters">🔤 Letter Finder</button>
+      <button class="game-tab" data-game="change">🕵️ Change Finder</button>
+      <button class="game-tab" data-game="rainbow">🌈 Rainbow Builder</button>
     </div>
 
     <div class="game-view active" id="view-memory">
@@ -339,6 +363,90 @@
       <p id="mix-msg" style="text-align:center;font-weight:700;min-height:1.5em;margin-top:12px;">Tap the color they make together!</p>
       <button class="center-btn" id="mix-reset">🔄 New Mix</button>
     </div>
+
+    <div class="game-view" id="view-starfind">
+      <p class="score-line">Find the ⭐, avoid the 💣! Score: <span id="sf-score">0</span></p>
+      <div class="ggrid" id="sf-grid" style="grid-template-columns:repeat(4,1fr);"></div>
+      <button class="center-btn" id="sf-new">🔄 New Round</button>
+    </div>
+
+    <div class="game-view" id="view-numtap">
+      <p class="score-line">Tap the numbers 1 → 8! Next: <span id="nt-next">1</span></p>
+      <div class="ggrid" id="nt-grid" style="grid-template-columns:repeat(4,1fr);"></div>
+      <button class="center-btn" id="nt-new">🔄 New Round</button>
+    </div>
+
+    <div class="game-view" id="view-odd">
+      <p class="score-line">Tap the odd one out! Score: <span id="odd-score">0</span></p>
+      <div class="grow" id="odd-row" style="font-size:2.2rem;"></div>
+      <button class="center-btn" id="odd-next">➡️ Next</button>
+    </div>
+
+    <div class="game-view" id="view-dice">
+      <p class="score-line">Add the two dice! Score: <span id="rd-score">0</span></p>
+      <div class="dice-row"><span id="rd-a">⚀</span><span style="font-size:1.8rem;"> + </span><span id="rd-b">⚁</span><span style="font-size:1.8rem;"> = ?</span></div>
+      <div class="grow" id="rd-opts"></div>
+      <button class="center-btn" id="rd-new">🔄 New Roll</button>
+    </div>
+
+    <div class="game-view" id="view-turtle">
+      <p class="score-line">Turtle Race — first to 10 wins!</p>
+      <div class="grow" id="tr-pick">
+        <button class="gpick" data-t="🐢">🐢</button>
+        <button class="gpick" data-t="🐊">🐊</button>
+        <button class="gpick" data-t="🦎">🦎</button>
+      </div>
+      <div class="race-lane"><button class="center-btn" id="tr-roll" style="margin:0;">🎲 Roll: <span id="tr-num">0</span></button></div>
+      <div class="race-lane" id="tr-track"></div>
+      <p id="tr-msg" class="gmsg">Pick your racer!</p>
+      <button class="center-btn" id="tr-reset">🔄 New Race</button>
+    </div>
+
+    <div class="game-view" id="view-tones">
+      <p class="score-line">Repeat the tune! Round: <span id="tn-round">0</span></p>
+      <div class="grow" id="tn-grid">
+        <button class="simon-pad p0" data-p="0" style="width:90px;height:90px;"></button>
+        <button class="simon-pad p1" data-p="1" style="width:90px;height:90px;"></button>
+        <button class="simon-pad p2" data-p="2" style="width:90px;height:90px;"></button>
+      </div>
+      <p id="tn-msg" class="gmsg">Watch, then repeat the colors!</p>
+      <button class="center-btn" id="tn-start">▶️ Start</button>
+    </div>
+
+    <div class="game-view" id="view-evenodd">
+      <p class="score-line">Even or Odd? Score: <span id="eo-score">0</span></p>
+      <div class="dice-row" style="font-size:4.2rem;"><span id="eo-num">3</span></div>
+      <div class="grow">
+        <button class="gpick" id="eo-even">Even</button>
+        <button class="gpick" id="eo-odd">Odd</button>
+      </div>
+      <button class="center-btn" id="eo-new">🔄 New</button>
+    </div>
+
+    <div class="game-view" id="view-letters">
+      <p class="score-line">Find the letter! Score: <span id="lf-score">0</span></p>
+      <div class="grow" id="lf-target" style="font-size:2.6rem;font-weight:800;">Find: A</div>
+      <div class="ggrid" id="lf-grid" style="grid-template-columns:repeat(5,1fr);"></div>
+      <button class="center-btn" id="lf-new">🔄 New</button>
+    </div>
+
+    <div class="game-view" id="view-change">
+      <p class="score-line">One tile changed — find it! Score: <span id="ch-score">0</span></p>
+      <p class="gmsg">Look at the left grid, then tap the changed tile on the right!</p>
+      <div class="grow" style="align-items:flex-start;">
+        <div class="ggrid" id="ch-a" style="grid-template-columns:repeat(3,1fr);max-width:150px;"></div>
+        <span style="font-size:2rem;margin-top:10px;">➡️</span>
+        <div class="ggrid" id="ch-b" style="grid-template-columns:repeat(3,1fr);max-width:150px;"></div>
+      </div>
+      <button class="center-btn" id="ch-next">🔄 New Change</button>
+    </div>
+
+    <div class="game-view" id="view-rainbow">
+      <p class="score-line">Build the rainbow! Next: <span id="rb-next">Red</span></p>
+      <div class="race-lane" id="rb-line"></div>
+      <div class="ggrid" id="rb-grid" style="grid-template-columns:repeat(4,1fr);max-width:340px;"></div>
+      <button class="center-btn" id="rb-new">🔄 New Rainbow</button>
+    </div>
   </div>
 </main>
 
@@ -353,6 +461,7 @@
     <a href="animals.html">Animals</a>
     <a href="space.html">Space</a>
     <a href="experiments.html">Science</a>
+    <a href="carnival.html">Carnival</a>
   </div>
   <h3>🌈 For Grown-Ups</h3>
   <div class="grownups">
@@ -1058,6 +1167,413 @@ function renderMix(){
 }
 document.getElementById('mix-reset').addEventListener('click',()=>{ mixScore=0; mixIdx=0; renderMix(); });
 renderMix();
+
+/* ============ STAR FINDER ============ */
+const sfCells = 16;
+let sfBoard = [], sfScore = 0, sfOver = false;
+function sfBuild(){
+  sfOver = false;
+  sfBoard = new Array(sfCells).fill('x');
+  sfBoard[Math.floor(Math.random()*sfCells)] = 's';
+  for(let i=0;i<3;i++){
+    let p; do{ p = Math.floor(Math.random()*sfCells); } while(sfBoard[p]!=='x');
+    sfBoard[p] = 'b';
+  }
+  const grid = document.getElementById('sf-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<sfCells;i++){
+    const c = document.createElement('button');
+    c.className = 'gcell';
+    c.addEventListener('click', () => sfTap(c,i));
+    grid.appendChild(c);
+  }
+  document.getElementById('sf-score').textContent = sfScore;
+}
+function sfTap(c,i){
+  if(sfOver || c.classList.contains('gone')) return;
+  if(sfBoard[i]==='s'){
+    c.textContent='⭐'; c.classList.add('found'); sfOver=true;
+    sfScore++; document.getElementById('sf-score').textContent=sfScore;
+    SCW.sound('star'); SCW.popConfetti(14);
+    if(sfScore%5===0) SCW.addStars(2);
+    if(sfScore>=50){ sfScore=0; }
+    setTimeout(sfBuild, 900);
+  } else if(sfBoard[i]==='b'){
+    c.textContent='💣'; c.classList.add('boom'); sfOver=true;
+    SCW.sound('boing');
+    SCW.showMascotSay('Boom! Tap New Round to try again! 💥', 2000);
+  } else {
+    c.textContent='·'; c.classList.add('gone');
+    SCW.sound('pop');
+  }
+}
+document.getElementById('sf-new').addEventListener('click', sfBuild);
+sfBuild();
+
+/* ============ NUMBER TAP ============ */
+let ntPos = [], ntNext = 1;
+function ntBuild(){
+  ntNext = 1;
+  ntPos = [1,2,3,4,5,6,7,8].sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('nt-grid');
+  grid.innerHTML = '';
+  ntPos.forEach(n=>{
+    const c = document.createElement('button');
+    c.className = 'gcell'; c.textContent = n;
+    c.addEventListener('click', () => ntTap(c,n));
+    grid.appendChild(c);
+  });
+  document.getElementById('nt-next').textContent = '1';
+}
+function ntTap(c,n){
+  if(n===ntNext){
+    c.classList.add('found');
+    SCW.sound('pop');
+    ntNext++;
+    const label = ntNext > 8 ? '🎉' : ntNext;
+    document.getElementById('nt-next').textContent = label;
+    if(ntNext>8){
+      SCW.sound('tada'); SCW.popConfetti(40); SCW.addStars(2);
+      SCW.showMascotSay('Number whiz! You tapped them all! 🔢✨', 2600);
+    }
+  } else {
+    SCW.sound('boing');
+    SCW.showMascotSay('Find the '+ntNext+'!', 1200);
+  }
+}
+document.getElementById('nt-new').addEventListener('click', ntBuild);
+ntBuild();
+
+/* ============ ODD ONE OUT ============ */
+const oddSets = [
+  ['🐶','🐶','🐶','🐱'],
+  ['🍎','🍏','🍎','🍎'],
+  ['⭐','⭐','🌟','⭐'],
+  ['🦁','🦁','🐯','🦁'],
+  ['🔵','🔵','🔴','🔵'],
+  ['🚗','🚗','🚌','🚗'],
+  ['🌸','🌸','🌸','🌼'],
+  ['🐸','🐸','🦆','🐸']
+];
+let oddIdx = 0, oddScore = 0;
+function oddBuild(){
+  const row = document.getElementById('odd-row');
+  row.innerHTML = '';
+  const set = oddSets[oddIdx % oddSets.length].slice().sort(()=>Math.random()-0.5);
+  const oddEmoji = oddSets[oddIdx % oddSets.length][3];
+  set.forEach(e=>{
+    const b = document.createElement('button');
+    b.className = 'gpick'; b.textContent = e;
+    b.addEventListener('click', ()=>{
+      if(e===oddEmoji){
+        b.classList.add('found'); oddScore++;
+        document.getElementById('odd-score').textContent = oddScore;
+        SCW.sound('star'); SCW.popConfetti(10);
+        if(oddScore%8===0) SCW.addStars(2);
+        setTimeout(()=>{ oddIdx++; oddBuild(); }, 850);
+      } else {
+        SCW.sound('boing');
+        b.style.animation = 'wiggle .4s';
+      }
+    });
+    row.appendChild(b);
+  });
+}
+document.getElementById('odd-next').addEventListener('click', ()=>{ oddIdx++; oddBuild(); });
+oddBuild();
+
+/* ============ ROLL & ADD (DICE) ============ */
+const diceFaces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+let rdScore = 0;
+function rdBuild(){
+  const a = 1 + Math.floor(Math.random()*6);
+  const b = 1 + Math.floor(Math.random()*6);
+  document.getElementById('rd-a').textContent = diceFaces[a-1];
+  document.getElementById('rd-b').textContent = diceFaces[b-1];
+  const ans = a + b;
+  const opts = [ans];
+  while(opts.length < 3){
+    const d = Math.max(2, ans + Math.floor(Math.random()*7) - 3);
+    if(opts.indexOf(d) === -1) opts.push(d);
+  }
+  opts.sort(()=>Math.random()-0.5);
+  const row = document.getElementById('rd-opts');
+  row.innerHTML = '';
+  opts.forEach(v=>{
+    const b2 = document.createElement('button');
+    b2.className = 'gpick'; b2.textContent = v;
+    b2.addEventListener('click', ()=>{
+      if(v === ans){
+        rdScore++;
+        document.getElementById('rd-score').textContent = rdScore;
+        SCW.sound('star');
+        if(rdScore%5 === 0) SCW.addStars(2);
+        setTimeout(rdBuild, 650);
+      } else {
+        SCW.sound('boing');
+        b2.style.animation = 'wiggle .4s';
+      }
+    });
+    row.appendChild(b2);
+  });
+}
+document.getElementById('rd-new').addEventListener('click', rdBuild);
+rdBuild();
+
+/* ============ TURTLE RACE ============ */
+let trYou = 0, trBot = 0, trPicked = false, trOver = false, trMine = '🐢', trBotE = '🐊';
+function trBuild(){
+  trYou = 0; trBot = 0; trPicked = false; trOver = false;
+  document.getElementById('tr-msg').textContent = 'Pick your racer!';
+  document.getElementById('tr-num').textContent = '0';
+  trDraw();
+  SCW.sound('pop');
+}
+function trDraw(){
+  const track = document.getElementById('tr-track');
+  track.innerHTML = '';
+  for(let i=0;i<10;i++){
+    const s = document.createElement('span');
+    if(i===trYou) s.textContent = trMine;
+    else if(i===trBot) s.textContent = trBotE;
+    else s.textContent = '·';
+    track.appendChild(s);
+  }
+}
+document.querySelectorAll('#tr-pick .gpick').forEach(bt=>{
+  bt.addEventListener('click', ()=>{
+    if(trOver || trPicked) return;
+    trPicked = true;
+    trMine = bt.dataset.t;
+    trBotE = trMine === '🐢' ? '🐊' : '🐢';
+    document.getElementById('tr-msg').textContent = 'Tap Roll to race!';
+    SCW.sound('pop');
+    trDraw();
+  });
+});
+document.getElementById('tr-roll').addEventListener('click', ()=>{
+  if(!trPicked || trOver) return;
+  const r = 1 + Math.floor(Math.random()*3);
+  document.getElementById('tr-num').textContent = r;
+  trYou = Math.min(10, trYou + r);
+  trBot = Math.min(10, trBot + (1 + Math.floor(Math.random()*3)));
+  SCW.sound('pop');
+  trDraw();
+  if(trYou >= 10 || trBot >= 10){
+    trOver = true;
+    if(trYou >= 10){
+      SCW.sound('tada'); SCW.popConfetti(50); SCW.addStars(3);
+      document.getElementById('tr-msg').textContent = 'You win the race! 🏆';
+    } else {
+      SCW.sound('boing');
+      document.getElementById('tr-msg').textContent = 'Good race — try again!';
+    }
+  }
+});
+document.getElementById('tr-reset').addEventListener('click', trBuild);
+trBuild();
+
+/* ============ REPEAT THE TUNE ============ */
+let tnSeq = [], tnStep = 0, tnPlaying = false, tnAudio = null;
+const tnFreq = [329.6, 261.6, 392];
+function tnTone(f){
+  if(!tnAudio) tnAudio = new (window.AudioContext||window.webkitAudioContext)();
+  const o = tnAudio.createOscillator(), g = tnAudio.createGain();
+  o.type = 'sine'; o.frequency.value = f;
+  g.gain.setValueAtTime(0.15, tnAudio.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, tnAudio.currentTime + 0.3);
+  o.connect(g); g.connect(tnAudio.destination);
+  o.start(); o.stop(tnAudio.currentTime + 0.32);
+}
+function tnLight(i, ms){
+  return new Promise(res=>{
+    const pad = document.querySelector('#tn-grid [data-p="'+i+'"]');
+    if(pad) pad.classList.add('lit');
+    tnTone(tnFreq[i]);
+    setTimeout(()=>{ if(pad) pad.classList.remove('lit'); setTimeout(res, ms*0.3); }, ms*0.7);
+  });
+}
+async function tnPlaySeq(){
+  tnPlaying = false;
+  for(const i of tnSeq){ await tnLight(i, 520); }
+  tnPlaying = true; tnStep = 0;
+}
+function tnNextRound(){
+  document.getElementById('tn-round').textContent = tnSeq.length + 1;
+  tnSeq.push(Math.floor(Math.random()*3));
+  tnPlaySeq();
+}
+document.querySelectorAll('#tn-grid .simon-pad').forEach(p=>{
+  p.addEventListener('click', ()=>{
+    if(!tnPlaying) return;
+    const i = parseInt(p.dataset.p, 10);
+    tnTone(tnFreq[i]);
+    p.classList.add('lit'); setTimeout(()=>p.classList.remove('lit'), 180);
+    if(i === tnSeq[tnStep]){
+      tnStep++;
+      if(tnStep === tnSeq.length){
+        tnPlaying = false;
+        SCW.sound('pop'); SCW.addStars(1);
+        setTimeout(tnNextRound, 650);
+      }
+    } else {
+      tnPlaying = false;
+      SCW.showMascotSay('Ooops! Tap Start to try again! 🎵', 1800);
+    }
+  });
+});
+document.getElementById('tn-start').addEventListener('click', ()=>{
+  tnSeq = [];
+  document.getElementById('tn-round').textContent = '0';
+  tnNextRound();
+});
+
+/* ============ EVEN OR ODD ============ */
+let eoScore = 0;
+function eoBuild(){
+  const n = 1 + Math.floor(Math.random()*12);
+  document.getElementById('eo-num').textContent = n;
+  SCW.sound('pop');
+}
+function eoGuess(parity){
+  const n = parseInt(document.getElementById('eo-num').textContent, 10);
+  const isEven = (n % 2 === 0);
+  if((parity === 'even') === isEven){
+    eoScore++;
+    document.getElementById('eo-score').textContent = eoScore;
+    SCW.sound('star');
+    if(eoScore%6 === 0) SCW.addStars(2);
+    setTimeout(eoBuild, 750);
+  } else {
+    SCW.sound('boing');
+    SCW.showMascotSay('Nope! ' + n + ' is ' + (isEven ? 'even' : 'odd'), 1800);
+  }
+}
+document.getElementById('eo-even').addEventListener('click', ()=>eoGuess('even'));
+document.getElementById('eo-odd').addEventListener('click', ()=>eoGuess('odd'));
+document.getElementById('eo-new').addEventListener('click', eoBuild);
+eoBuild();
+
+/* ============ LETTER FINDER ============ */
+const lfLetters = 'ABCDEFGHJKLMNPRSTVWXZ'.split('');
+let lfScore = 0;
+function lfBuild(){
+  const target = lfLetters[Math.floor(Math.random()*lfLetters.length)];
+  document.getElementById('lf-target').textContent = 'Find: ' + target;
+  const cells = lfLetters.slice().sort(()=>Math.random()-0.5);
+  if(cells.indexOf(target) === -1) cells[0] = target;
+  cells.length = 15;
+  cells.sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('lf-grid');
+  grid.innerHTML = '';
+  cells.forEach(letter=>{
+    const c = document.createElement('button');
+    c.className = 'gcell'; c.textContent = letter;
+    c.addEventListener('click', ()=>{
+      if(letter === target){
+        c.classList.add('found');
+        lfScore++;
+        document.getElementById('lf-score').textContent = lfScore;
+        SCW.sound('star'); SCW.popConfetti(10);
+        if(lfScore%6 === 0) SCW.addStars(2);
+        setTimeout(lfBuild, 800);
+      } else {
+        c.classList.add('gone');
+        SCW.sound('boing');
+      }
+    });
+    grid.appendChild(c);
+  });
+}
+document.getElementById('lf-new').addEventListener('click', lfBuild);
+lfBuild();
+
+/* ============ CHANGE FINDER ============ */
+const chEmojis = ['😀','🐶','🍎','⭐','🎈','🚗','🌻','🐸','🦄'];
+let chScore = 0;
+function chBuild(){
+  const a = [];
+  for(let i=0;i<9;i++){ a.push(chEmojis[i % chEmojis.length]); }
+  const b = a.slice();
+  const changeIdx = Math.floor(Math.random()*9);
+  let other;
+  do{ other = chEmojis[Math.floor(Math.random()*chEmojis.length)]; }while(other === a[changeIdx]);
+  b[changeIdx] = other;
+  const ga = document.getElementById('ch-a');
+  ga.innerHTML = '';
+  a.forEach(e=>{
+    const c = document.createElement('div');
+    c.className = 'gcell'; c.style.fontSize = '1.1rem'; c.textContent = e;
+    ga.appendChild(c);
+  });
+  const gb = document.getElementById('ch-b');
+  gb.innerHTML = '';
+  b.forEach((e, idx)=>{
+    const c = document.createElement('div');
+    c.className = 'gcell'; c.style.fontSize = '1.1rem'; c.textContent = e;
+    c.addEventListener('click', ()=>{
+      if(idx === changeIdx){
+        c.classList.add('found');
+        chScore++;
+        document.getElementById('ch-score').textContent = chScore;
+        SCW.sound('star'); SCW.popConfetti(10);
+        if(chScore%6 === 0) SCW.addStars(2);
+        setTimeout(chBuild, 900);
+      } else {
+        c.classList.add('gone');
+        SCW.sound('boing');
+      }
+    });
+    gb.appendChild(c);
+  });
+}
+document.getElementById('ch-next').addEventListener('click', chBuild);
+chBuild();
+
+/* ============ RAINBOW BUILDER ============ */
+const rbOrder = [
+  {n:'Red', c:'#FF4D4D'}, {n:'Orange', c:'#FF9F43'}, {n:'Yellow', c:'#FFD34D'},
+  {n:'Green', c:'#58D68D'}, {n:'Blue', c:'#4FC3F7'}, {n:'Purple', c:'#A66BF0'}
+];
+let rbIdx = 0;
+function rbBuild(){
+  rbIdx = 0;
+  const deck = rbOrder.slice().sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('rb-grid');
+  grid.innerHTML = '';
+  deck.forEach(col=>{
+    const c = document.createElement('button');
+    c.className = 'gcell'; c.style.background = col.c;
+    c.addEventListener('click', ()=>{
+      if(rbOrder[rbIdx].c === col.c && !c.classList.contains('gone')){
+        c.classList.add('gone'); c.style.opacity = '.35';
+        rbIdx++;
+        rbUpdate();
+        SCW.sound('pop');
+        if(rbIdx >= rbOrder.length){
+          SCW.sound('tada'); SCW.popConfetti(40); SCW.addStars(2);
+          SCW.showMascotSay('A beautiful rainbow! 🌈✨', 2600);
+        }
+      } else {
+        SCW.sound('boing');
+      }
+    });
+    grid.appendChild(c);
+  });
+  rbUpdate();
+}
+function rbUpdate(){
+  const line = document.getElementById('rb-line');
+  line.innerHTML = '';
+  for(let i=0;i<rbOrder.length;i++){
+    const s = document.createElement('span');
+    s.style.cssText = 'width:34px;height:34px;border-radius:50%;background:'+rbOrder[i].c+';display:inline-block;'+(i<rbIdx?'':'opacity:.25;');
+    line.appendChild(s);
+  }
+  document.getElementById('rb-next').textContent = rbIdx >= rbOrder.length ? 'Done! 🎉' : rbOrder[rbIdx].n;
+}
+document.getElementById('rb-new').addEventListener('click', rbBuild);
+rbBuild();
 </script>
 </body>
 </html>
