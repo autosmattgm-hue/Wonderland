@@ -12,6 +12,7 @@ const CORE = [
   './common.css',
   './common.js',
   './manifest.webmanifest',
+  './icon.jpeg',
   './favicon.svg',
   './favicon-32.png',
   './icon-192.png',
