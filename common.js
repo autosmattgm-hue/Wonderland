@@ -122,10 +122,42 @@ function addStars(n){
     setTimeout(function(){ badge.classList.remove('scw-bounce'); }, 700);
   }
   drawStars();
+  checkStickers();
   var happy = ['⭐ +'+n+' stars for you!','🎉 Yay! +'+n+' stars!','You are amazing! 🌟','Keep it up, superstar! 💖'];
   showMascotSay(happy[Math.floor(Math.random()*happy.length)], 1800);
 }
 function getStars(){ return stars; }
+
+/* ---------- sticker book (earn stickers at star milestones) ---------- */
+var STICKERS = [
+  [10,'⭐','First Steps'],
+  [30,'🌟','Star Catcher'],
+  [60,'🌈','Rainbow Rider'],
+  [100,'🏅','Wonderland Champ'],
+  [160,'🦄','Unicorn Ranger'],
+  [250,'👑','Cloud Royalty']
+];
+var stickerKey = 'scw_stickers';
+var stickerMap = {};
+try { stickerMap = JSON.parse(localStorage.getItem(stickerKey)) || {}; } catch(e){ stickerMap = {}; }
+function checkStickers(){
+  var s = getStars();
+  STICKERS.forEach(function(st){
+    if(s >= st[0] && !stickerMap[st[0]]){
+      stickerMap[st[0]] = true;
+      try { localStorage.setItem(stickerKey, JSON.stringify(stickerMap)); } catch(e){}
+      setTimeout(function(){
+        popConfetti(30);
+        showMascotSay('🏅 New sticker: ' + st[1] + ' ' + st[2] + '!', 3200);
+      }, 700);
+    }
+  });
+}
+function getStickers(){
+  var list = [];
+  STICKERS.forEach(function(st){ if(stickerMap[st[0]]) list.push(st); });
+  return list;
+}
 
 function initBadge(){
   var div = document.createElement('div');
@@ -152,6 +184,8 @@ function sparkleAt(x, y){
 /* ---------- init ---------- */
 function init(){
   initBadge();
+  showInstallBtn();
+  checkStickers();
   if(window.scwClickSparkles !== false){
     document.addEventListener('click', function(ev){
       if(ev.target.closest && ev.target.closest('.scw-no-spark')) return;
@@ -175,13 +209,44 @@ if(document.readyState === 'loading'){
   init();
 }
 
+/* ---------- app install (download this site as an app) ---------- */
+let deferredPrompt = null;
+if ('serviceWorker' in navigator && /^https:/.test(location.protocol)) {
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  const b = document.getElementById('scw-install');
+  if(b) b.style.background = 'var(--grass)';
+});
+function showInstallBtn(){
+  const b = document.createElement('button');
+  b.id = 'scw-install';
+  b.className = 'scw-install-btn';
+  b.textContent = '📲';
+  b.title = 'Download Sunny Cloud as an app';
+  b.addEventListener('click', installApp);
+  document.body.appendChild(b);
+}
+function installApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+  } else {
+    showMascotSay('On a phone: open the menu and tap "Add to Home Screen". On a computer: tap the install icon in the address bar. 📲', 4400);
+  }
+}
+
 window.SCW = {
   addStars: addStars,
   getStars: getStars,
+  getStickers: getStickers,
   popConfetti: popConfetti,
   sound: sound,
   showMascotSay: showMascotSay,
-  sparkleAt: sparkleAt
+  sparkleAt: sparkleAt,
+  installApp: installApp
 };
 
 })();

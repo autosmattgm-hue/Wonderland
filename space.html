@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4FC3F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Space Adventure 🚀 | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #space-land{ background:linear-gradient(180deg,#EAF3FF,#FFFBF2); }
+  .planets{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; max-width:800px; margin:0 auto; }
+  .planet-card{ background:white; border-radius:20px; padding:16px; text-align:center; cursor:pointer; box-shadow:var(--shadow); transition:transform .15s; border:4px solid var(--sky-light); }
+  .planet-card:hover{ transform:translateY(-4px); }
+  .planet-card .p-emoji{ font-size:3rem; display:block; }
+  .planet-card h4{ margin:6px 0 4px; }
+  .planet-card p{ margin:0; font-size:.9rem; color:#6a5c85; display:none; }
+  .planet-card.open p{ display:block; animation:popIn .25s ease; }
+  .rocket-stage{ max-width:620px; margin:0 auto; text-align:center; }
+  .skyline{ position:relative; height:320px; background:linear-gradient(180deg,#0b1030,#3a2e6d); border-radius:22px; overflow:hidden; box-shadow:var(--shadow); }
+  .stars-in{ position:absolute; inset:0; }
+  .skyline .star{ position:absolute; color:white; animation:twinkleK 1.6s ease-in-out infinite; }
+  @keyframes twinkleK{ 0%,100%{opacity:.3;} 50%{opacity:1;} }
+  .skyline .bigrocket{ position:absolute; bottom:-90px; left:50%; margin-left:-40px; font-size:4.6rem; transition:bottom 3.4s ease; }
+  .skyline .planet-target{ position:absolute; top:6%; right:14%; font-size:3.6rem; }
+  .skyline.launched .bigrocket{ bottom:88%; }
+  .count-num{ font-size:3rem; font-weight:800; color:white; min-height:1.2em; }
+  .dest-chips{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+  .dest-chip{ padding:10px 18px; border-radius:999px; background:var(--sky-light); font-weight:700; box-shadow:var(--shadow); }
+  .dest-chip.active{ background:var(--grape); color:white; }
+  .quiz-opts{ display:grid; gap:12px; max-width:420px; margin:0 auto; }
+  .quiz-opt{ padding:14px; border-radius:16px; background:var(--sky-light); font-weight:700; font-size:1.05rem; box-shadow:var(--shadow); }
+  .quiz-opt.correct{ background:var(--grass); color:white; }
+  .quiz-opt.wrong{ background:#FF6F6F; color:white; }
+  .big{ font-size:3rem; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+  <a class="balloon-btn b8" href="animals.html">🦁 Animals</a>
+  <a class="balloon-btn b9 current" href="space.html">⭐ Space</a>
+  <a class="balloon-btn b10" href="experiments.html">🧪 Science</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:110px;height:46px;top:12%;left:-10%;animation-duration:42s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">🚀</div>
+    <h1>Space Adventure</h1>
+    <p>Blast off to the planets and the stars!</p>
+  </header>
+</div>
+
+<main class="land" id="space-land">
+  <div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">🪐 Planet Parade</h2>
+    <p class="land-sub">Tap a planet to learn a fun fact!</p>
+    <div class="planets" id="planet-grid"></div>
+  </div>
+
+  <div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">🚀 Rocket to Space!</h2>
+    <p class="land-sub">Pick a place to visit, then blast off!</p>
+    <div class="rocket-stage">
+      <div class="dest-chips" id="dest-chips"></div>
+      <div class="skyline" id="skyline">
+        <div class="stars-in" id="space-stars"></div>
+        <div class="planet-target" id="planet-target">🌙</div>
+        <div class="bigrocket" id="big-rocket">🚀</div>
+      </div>
+      <div class="count-num" id="count-num"></div>
+      <button class="center-btn" id="launch-btn" style="background:var(--bubblegum);">🚀 Blast Off!</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">🧠 Space Quiz</h2>
+    <p class="land-sub" id="spaceq-progress">Question 1</p>
+    <div id="spaceq-body"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="stories.html">Stories</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+    <a href="animals.html">Animals</a>
+    <a href="space.html">Space</a>
+    <a href="experiments.html">Science</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">Space Adventure runs entirely in the browser — planet facts, a rocket launch game, and a space quiz. Nothing is collected or sent anywhere; stars and stickers live only on this device.</div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+/* ============ PLANET PARADE ============ */
+const planets = [
+  {name:'Mercury', emoji:'☿️', fact:'Mercury is the smallest planet and the closest to the Sun!'},
+  {name:'Venus', emoji:'♀️', fact:'Venus is SO hot it could melt a lead pencil!'},
+  {name:'Earth', emoji:'🌍', fact:'Earth is the only planet we know with life — that\u2019s us!'},
+  {name:'Mars', emoji:'🔴', fact:'Mars is called the Red Planet because of its rusty dust!'},
+  {name:'Jupiter', emoji:'🟠', fact:'Jupiter is the biggest planet — 1,300 Earths could fit inside!'},
+  {name:'Saturn', emoji:'🪐', fact:'Saturn has beautiful rings made of ice and rock!'},
+  {name:'Uranus', emoji:'🔵', fact:'Uranus spins on its side like a rolling ball!'},
+  {name:'Neptune', emoji:'🌌', fact:'Neptune has the fastest winds in the whole solar system!'}
+];
+const seenPlanet = {};
+function buildPlanets(){
+  const grid = document.getElementById('planet-grid');
+  grid.innerHTML = '';
+  planets.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'planet-card';
+    card.innerHTML = '<span class="p-emoji">' + p.emoji + '</span><h4>' + p.name + '</h4><p>' + p.fact + '</p>';
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+      SCW.sound('pop');
+      if(card.classList.contains('open') && !seenPlanet[i]){ seenPlanet[i] = true; SCW.popConfetti(8); }
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ============ ROCKET LAUNCH ============ */
+const destinations = [
+  {name:'The Moon', emoji:'🌙'},
+  {name:'Mars', emoji:'🔴'},
+  {name:'Saturn', emoji:'🪐'},
+  {name:'Neptune', emoji:'🌌'},
+  {name:'A Star', emoji:'⭐'}
+];
+let destIdx = 0, launching = false;
+function buildDests(){
+  const chips = document.getElementById('dest-chips');
+  chips.innerHTML = '';
+  destinations.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.className = 'dest-chip' + (i === destIdx ? ' active' : '');
+    b.textContent = d.name;
+    b.addEventListener('click', () => {
+      destIdx = i;
+      buildDests();
+      document.getElementById('planet-target').textContent = d.emoji;
+      SCW.sound('pop');
+    });
+    chips.appendChild(b);
+  });
+  document.getElementById('planet-target').textContent = destinations[destIdx].emoji;
+}
+function addSpaceStars(){
+  const wrap = document.getElementById('space-stars');
+  for(let i = 0; i < 30; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.textContent = '✦';
+    s.style.left = (Math.random() * 94) + '%';
+    s.style.top = (Math.random() * 90) + '%';
+    s.style.fontSize = (0.5 + Math.random() * 0.8) + 'rem';
+    s.style.animationDelay = (-Math.random() * 2) + 's';
+    wrap.appendChild(s);
+  }
+}
+document.getElementById('launch-btn').addEventListener('click', () => {
+  if(launching) return;
+  launching = true;
+  document.getElementById('count-num').textContent = '3';
+  SCW.sound('pop');
+  setTimeout(() => { document.getElementById('count-num').textContent = '2'; SCW.sound('pop'); }, 800);
+  setTimeout(() => { document.getElementById('count-num').textContent = '1'; SCW.sound('pop'); }, 1600);
+  setTimeout(() => {
+    document.getElementById('count-num').textContent = '';
+    document.getElementById('skyline').classList.add('launched');
+    SCW.sound('tada');
+  }, 2400);
+  setTimeout(() => {
+    SCW.popConfetti(60); SCW.sound('win'); SCW.addStars(2);
+    document.getElementById('count-num').textContent = 'You reached ' + destinations[destIdx].name + '! 🎉';
+    SCW.showMascotSay('Blast off! Welcome to ' + destinations[destIdx].name + '! 🚀✨', 3000);
+    setTimeout(() => {
+      document.getElementById('skyline').classList.remove('launched');
+      document.getElementById('count-num').textContent = '';
+      launching = false;
+    }, 3200);
+  }, 5900);
+});
+
+/* ============ SPACE QUIZ ============ */
+const spaceQ = [
+  {q:'Which planet do we live on?', o:['Mars','Earth','Jupiter'], c:1},
+  {q:'What do we call a rock that zooms through space?', o:['A loony','A meteor','A marble'], c:1},
+  {q:'Which planet is nearest the Sun?', o:['Venus','Mercury','Earth'], c:1},
+  {q:'What shines in the sky at night?', o:['Stars','Cookies','Marbles'], c:0},
+  {q:'Who was the first person on the Moon?', o:['Neil Armstrong','Buzz Lightyear','Mickey Mouse'], c:0}
+];
+let sqIdx = 0, sqScore = 0, sqLock = false;
+function renderSpaceQ(){
+  const prog = document.getElementById('spaceq-progress');
+  const body = document.getElementById('spaceq-body');
+  if(sqIdx >= spaceQ.length){
+    prog.textContent = 'Score: ' + sqScore + ' / ' + spaceQ.length;
+    body.innerHTML = '<div class="quiz-done" style="text-align:center;"><div class="big">🚀</div><p style="font-size:1.3rem;font-weight:700;">Space genius! ' + sqScore + ' right!</p><button class="center-btn" id="spaceq-again">🔄 Play Again</button></div>';
+    document.getElementById('spaceq-again').addEventListener('click', () => { sqIdx = 0; sqScore = 0; renderSpaceQ(); });
+    SCW.sound('tada'); SCW.popConfetti(40); SCW.addStars(sqScore);
+    return;
+  }
+  prog.textContent = 'Question ' + (sqIdx + 1) + ' of ' + spaceQ.length;
+  const item = spaceQ[sqIdx];
+  body.innerHTML = '<div class="quiz-q" style="font-size:1.3rem;font-weight:700;margin-bottom:16px;text-align:center;">' + item.q + '</div>';
+  const opts = document.createElement('div');
+  opts.className = 'quiz-opts';
+  sqLock = false;
+  item.o.forEach((ans, i) => {
+    const b = document.createElement('button');
+    b.className = 'quiz-opt';
+    b.textContent = ans;
+    b.addEventListener('click', () => {
+      if(sqLock) return;
+      sqLock = true;
+      if(i === item.c){ b.classList.add('correct'); sqScore++; SCW.sound('star'); }
+      else { b.classList.add('wrong'); opts.children[item.c].classList.add('correct'); SCW.sound('boing'); }
+      setTimeout(() => { sqIdx++; renderSpaceQ(); }, 950);
+    });
+    opts.appendChild(b);
+  });
+  body.appendChild(opts);
+}
+buildPlanets();
+buildDests();
+addSpaceStars();
+renderSpaceQ();
+</script>
+</body>
+</html>

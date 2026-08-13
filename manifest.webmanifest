@@ -1,0 +1,19 @@
+{
+  "name": "Sunny Cloud Wonderland — Games, Cartoons & Fun for Kids",
+  "short_name": "Sunny Wonderland",
+  "description": "A magical ad-free park for kids: favorite cartoons, games, stories, coloring, music and fun!",
+  "id": "sunny-cloud-wonderland",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#DFF4FF",
+  "theme_color": "#4FC3F7",
+  "categories": ["kids", "entertainment", "education"],
+  "icons": [
+    { "src": "favicon-32.png", "sizes": "32x32", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

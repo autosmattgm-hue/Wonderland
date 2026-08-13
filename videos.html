@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4FC3F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sunny Cloud">
 <title>Cartoon Corner 📺 — Watch All Your Favorite Shows! | Sunny Cloud Wonderland</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,6 +166,17 @@
   .video-card img{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
   .video-card span{ display:block; padding:8px 10px; font-weight:800; font-size:.86rem; line-height:1.25; }
   .video-card.on{ border-color:var(--bubblegum); outline:3px solid var(--bubblegum); }
+
+  .yt-poster{ position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; }
+  .yt-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .yt-playcopy{
+    position:absolute; inset:0; width:100%; border:0; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    background:rgba(20,16,43,.30); color:white;
+  }
+  .yt-playcopy span{ font-size:4.2rem; filter:drop-shadow(0 6px 0 rgba(0,0,0,.35)); }
+  .yt-playcopy em{ font-style:normal; font-weight:800; padding:6px 16px; border-radius:999px; background:rgba(20,16,43,.45); }
+  .yt-playcopy:hover span{ animation:scwBounce .5s ease; }
 </style>
 </head>
 <body>
@@ -170,6 +189,9 @@
   <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
   <a class="balloon-btn b4" href="music.html">🎵 Music</a>
   <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+  <a class="balloon-btn b8" href="animals.html">🦁 Animals</a>
+  <a class="balloon-btn b9" href="space.html">⭐ Space</a>
+  <a class="balloon-btn b10" href="experiments.html">🧪 Science</a>
 </nav>
 
 <div class="sky-bg">
@@ -193,9 +215,15 @@
       <div class="yt-title" id="yt-title"></div>
       <div class="show-videos" id="show-videos"></div>
       <div class="yt-controls">
+        <button class="center-btn" id="yt-skip" style="margin:0;background:var(--bubblegum);">⬇ Next Episode</button>
         <button class="center-btn" id="yt-special" style="margin:0;">🎲 Surprise Me!</button>
+        <button class="center-btn" id="yt-alt" style="margin:0;background:var(--grape);">🔄 Alternate Player</button>
       </div>
-      <p class="ad-note" id="scw-adnote" style="display:none;">If the video screen ever looks blank, an ad blocker is probably stopping it. Please allow (whitelist) this site in your ad blocker, and it will play right here. 💖</p>
+      <div class="ad-note" id="scw-adnote" style="display:none;">
+        🧩 <strong>Video blocker found — here's the one-time fix!</strong><br>
+        Your browser's ad blocker (like uBlock Origin) is stopping the video. Tap its icon in the address bar → <strong>"Pause on this site" / "Allow"</strong> → refresh this page, and every episode will play right here. Meanwhile, use <strong>⬇ Next Episode</strong> or the <strong>🔄 Alternate Player</strong> button below.<br>
+        <button id="scw-adnote-recheck" class="center-btn" style="margin:12px auto 0;background:var(--grass);">✓ I've allowed it — re-check</button>
+      </div>
       <p class="tv-caption">Tap any episode card to play it — everything plays right here!</p>
     </div>
   </div>
@@ -257,6 +285,9 @@
     <a href="coloring.html">Coloring</a>
     <a href="music.html">Music</a>
     <a href="fun-zone.html">Fun Zone</a>
+    <a href="animals.html">Animals</a>
+    <a href="space.html">Space</a>
+    <a href="experiments.html">Science</a>
   </div>
   <h3>🌈 For Grown-Ups</h3>
   <div class="grownups">
@@ -360,11 +391,9 @@ const shows = [
     ['VJAkHWXZPuI','The Royal Ice Dancers']]},
   { key:'pawpatrol', emoji:'🐾', name:'PAW Patrol', videos:[
     ['k5-jvNvFDlE','Full Episodes (Official)'],
-    ['24IxnPtts44','Pups Make a Splash'],
-    ['9XQs-6OoDHY','Save the Sea Turtles'],
-    ['aDxVbqSYDYg','The Kitty-tastrophe'],
     ['MZNTotsZXLY','Bug Rescues (2 hours)'],
-    ['gbsgbcd_-2U','Rescue Wheels Adventures']]},
+    ['gbsgbcd_-2U','Rescue Wheels Adventures'],
+    ['NRLlg6yUqSU','Baby Pups Compilation']]},
   { key:'spidey', emoji:'🕷️', name:'Spidey & Friends', videos:[
     ['lBdbttgfmRw','Season 1 (2 hours!)'],
     ['Rj76lv6pfVo','Moon Girl & Hulk'],
@@ -407,11 +436,102 @@ const shows = [
 ];
 let curShow = 'cocomelon';
 
-function videoSrc(id){ return 'https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1&modestbranding=1'; }
+function videoSrc(id){ return 'https://www.youtube.com/embed/'+id+'?rel=0&playsinline=1&modestbranding=1'; }
+let currentId='', currentLabel='', ytPlayer=null, apiReady=false, apiStopped=false;
+const failedIds = {};
 function setVideo(id, label){
-  document.getElementById('yt-video').innerHTML =
-    '<iframe class="yt-frame" src="'+videoSrc(id)+'" title="'+label+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
-  document.getElementById('yt-title').textContent = label + ' ▶';
+  currentId = id; currentLabel = label;
+  const titleEl = document.getElementById('yt-title');
+  if(titleEl) titleEl.textContent = label + ' ▶';
+  const host = document.getElementById('yt-video');
+  if(!host) return;
+  if(!apiStopped && apiReady && window.YT && YT.Player){
+    if(ytPlayer){ try{ ytPlayer.loadVideoById(id); return; }catch(e){ ytPlayer=null; } }
+    host.innerHTML = '';
+    const holder = document.createElement('div');
+    host.appendChild(holder);
+    try{
+      ytPlayer = new YT.Player(holder, {
+        videoId: id,
+        playerVars: { rel:0, playsinline:1, modestbranding:1 },
+        events: { onError: onYtError }
+      });
+      return;
+    }catch(e){ host.innerHTML=''; }
+  }
+  plainVideo(id, label);
+}
+function plainVideo(id, label){
+  const host = document.getElementById('yt-video');
+  const src = (apiStopped || altOn) ? altStream(id) : videoSrc(id);
+  host.innerHTML = '<iframe class="yt-frame" src="'+src+'" title="'+label+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+}
+function showPoster(id, label){
+  currentId = id; currentLabel = label;
+  const titleEl = document.getElementById('yt-title');
+  if(titleEl) titleEl.textContent = label;
+  const host = document.getElementById('yt-video');
+  if(!host) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'yt-poster';
+  const img = document.createElement('img');
+  img.src = 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
+  img.alt = label;
+  const copy = document.createElement('button');
+  copy.type = 'button';
+  copy.className = 'yt-playcopy';
+  copy.innerHTML = '<span>▶️</span><em>Tap to watch</em>';
+  copy.addEventListener('click', function(){ setVideo(id, label); });
+  wrap.appendChild(img);
+  wrap.appendChild(copy);
+  host.innerHTML = '';
+  host.appendChild(wrap);
+}
+function onYtError(e){
+  const n = (e && e.data) || 0;
+  if([2,5,100,101,150].indexOf(n) !== -1){
+    const bad = currentId;
+    failedIds[bad] = true;
+    markFailedOnCard(bad);
+    const s = getShow(curShow);
+    const next = s.videos.find(v => v[0] !== bad && !failedIds[v[0]]);
+    if(next){
+      SCW.sound('boing');
+      SCW.showMascotSay('That one can\u2019t play here, so here\u2019s another episode! 🎬', 2300);
+      setVideo(next[0], next[1]);
+      highlightCard(next[0]);
+    } else {
+      SCW.sound('pop');
+      SCW.showMascotSay('That video can\u2019t play right now. Please allow this site in your ad blocker, or come back soon. 💛', 3400);
+    }
+  }
+}
+function highlightCard(id){
+  document.querySelectorAll('.video-card').forEach(c => c.classList.toggle('on', c.dataset.id === id));
+}
+function markFailedOnCard(id){
+  document.querySelectorAll('.video-card').forEach(c => { if(c.dataset.id === id) c.classList.add('off'); });
+}
+function markUnavailable(id, cardEl){
+  failedIds[id] = true;
+  if(cardEl) cardEl.classList.add('off');
+  if(currentId === id){
+    const s = getShow(curShow);
+    const next = s.videos.find(v => v[0] !== id && !failedIds[v[0]]);
+    if(next){ setVideo(next[0], next[1]); highlightCard(next[0]); }
+  }
+}
+function loadYTAPI(){
+  if(apiStopped) return;
+  if(window.YT && YT.Player){ apiReady = true; return; }
+  if(document.getElementById('yt-api-script')) return;
+  const tag = document.createElement('script');
+  tag.id = 'yt-api-script';
+  tag.src = 'https://www.youtube.com/iframe_api';
+  tag.onerror = function(){ apiStopped = true; showYtHelp(); };
+  document.head.appendChild(tag);
+  window.onYouTubeIframeAPIReady = function(){ apiReady = true; };
+  setTimeout(function(){ if(!apiReady && !ytPlayer){ apiStopped = true; } }, 6000);
 }
 function getShow(k){ return shows.find(s=>s.key===k) || shows[0]; }
 
@@ -426,26 +546,38 @@ function buildShowTabs(){
     wrap.appendChild(b);
   });
 }
+const checkedIds = {};
 function renderShow(){
   const s = getShow(curShow);
   curShow = s.key;
   buildShowTabs();
-  const first = s.videos[0];
-  setVideo(first[0], first[1]);
   const grid = document.getElementById('show-videos');
   grid.innerHTML = '';
   s.videos.forEach(v=>{
     const card = document.createElement('button');
-    card.className = 'video-card';
+    card.className = 'video-card' + (failedIds[v[0]] ? ' off' : '');
+    card.dataset.id = v[0];
     card.innerHTML = '<img loading="lazy" src="https://i.ytimg.com/vi/'+v[0]+'/hqdefault.jpg" alt="'+v[1]+'"><span>'+v[1]+'</span>';
     card.addEventListener('click', ()=>{
+      if(failedIds[v[0]]) return;
       setVideo(v[0], v[1]);
-      document.querySelectorAll('.video-card').forEach(c=>c.classList.remove('on'));
-      card.classList.add('on');
+      highlightCard(v[0]);
       SCW.sound('pop');
     });
     grid.appendChild(card);
+    if(!checkedIds[v[0]]){
+      checkedIds[v[0]] = true;
+      preflightVideo(v[0], card);
+    }
   });
+  const pick = s.videos.find(v => !failedIds[v[0]]);
+  if(pick){ showPoster(pick[0], pick[1]); highlightCard(pick[0]); }
+  else { SCW.showMascotSay('All episodes of this show are busy! Try another show. 🌈', 3000); }
+}
+function preflightVideo(id, cardEl){
+  fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent('https://www.youtube.com/watch?v='+id) + '&format=json')
+    .then(r => { if(!r.ok) markUnavailable(id, cardEl); })
+    .catch(()=>{});
 }
 /* (the old tap-to-add-show features were replaced by the built-in episode library) */
 
@@ -456,21 +588,61 @@ document.getElementById('yt-special').addEventListener('click', ()=>{
   SCW.showMascotSay('Surprise! Let\u2019s watch a new episode! 🎬', 2600);
 });
 
-/* ---- Gentle ad-blocker notice (explains a blank video screen, never leaves the page) ---- */
-function detectAdBlock(){
-  const tester = document.createElement('div');
-  tester.className = 'adsbox ad-placement';
-  tester.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
-  document.body.appendChild(tester);
-  setTimeout(()=>{
-    if(tester.offsetHeight === 0){
-      const note = document.getElementById('scw-adnote');
-      if(note) note.style.display = 'block';
-    }
-    tester.remove();
-  }, 350);
+/* ---- Next Episode button (always works, no API needed) ---- */
+document.getElementById('yt-skip').addEventListener('click', ()=>{
+  const s = getShow(curShow);
+  if(!s.videos.length) return;
+  let i = s.videos.findIndex(v => v[0] === currentId);
+  i = (i + 1) % s.videos.length;
+  for(let c=0;c<s.videos.length;c++){
+    const v = s.videos[i];
+    if(!failedIds[v[0]]){ setVideo(v[0], v[1]); highlightCard(v[0]); SCW.sound('pop'); SCW.popConfetti(8); return; }
+    i = (i + 1) % s.videos.length;
+  }
+  SCW.showMascotSay('All episodes here are busy — pick another show! 🌈', 2600);
+});
+
+/* ---- Alternate Player (a different stream source that ad blockers don't stop) ---- */
+const altInstances = ['https://yewtu.be','https://invidious.f5.si','https://inv.nadeko.net','https://piped.video','https://invidious.nerdvpn.de','https://iv.melmac.space','https://invidious.jing.rocks'];
+let altIdx = 0, altOn = false;
+function altStream(id){
+  const inst = altInstances[altIdx % altInstances.length];
+  altIdx++;
+  return inst + '/embed/' + encodeURIComponent(id) + '?autoplay=1';
 }
-detectAdBlock();
+document.getElementById('yt-alt').addEventListener('click', () => {
+  altOn = true;
+  SCW.sound('pop');
+  setVideo(currentId, currentLabel);
+  const used = altInstances[(altIdx - 1 + altInstances.length) % altInstances.length];
+  SCW.showMascotSay('Alternate player on (from '+used.replace('https://','')+'). Tap it again to try the next source. 💛', 4200);
+});
+
+/* ---- YouTube-blocker detection & one-time fix panel ---- */
+function ytReachCheck(){
+  return fetch('https://www.youtube.com/generate_204', { mode:'no-cors', cache:'no-store' })
+    .then(function(){ return true; })
+    .catch(function(){ return false; });
+}
+function showYtHelp(){
+  const note = document.getElementById('scw-adnote');
+  if(note) note.style.display = 'block';
+}
+function detectYTBlock(){
+  ytReachCheck().then(function(ok){ if(!ok) showYtHelp(); });
+}
+document.getElementById('scw-adnote-recheck').addEventListener('click', function(){
+  ytReachCheck().then(function(ok){
+    if(ok){
+      document.getElementById('scw-adnote').style.display = 'none';
+      SCW.showMascotSay('You did it — videos will play now! 🎉', 2800);
+    } else {
+      SCW.showMascotSay('Still blocked! Turn the blocker off for this site, then press re-check. 💛', 3800);
+    }
+  });
+});
+detectYTBlock();
+loadYTAPI();
 
 renderShow();
 </script>

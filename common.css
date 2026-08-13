@@ -5,7 +5,7 @@
   --sky:#4FC3F7;
   --sky-light:#DFF4FF;
   --sun:#FFD34D;
-  --bubblegum:#FF6FA3;
+  --bubblegum:#FF6FA3; 
   --grass:#58D68D;
   --grape:#A66BF0;
   --cream:#FFFBF2;
@@ -93,6 +93,9 @@ img{max-width:100%;}
 .b5{background:#FF9F43;}
 .b6{background:#FF4D6D;}
 .b7{background:#37B5A3;}
+.b8{background:#7BC950;}
+.b9{background:#6C4FBB;}
+.b10{background:#FF8C2E;}
 
 /* ---------- Hero (home page) ---------- */
 .hero{
@@ -298,3 +301,86 @@ footer .foot-links a:hover{ text-decoration:underline;}
 }
 @keyframes scwRainbow{ to{ background-position:300% 0; } }
 .spinner{ display:inline-block; animation:spin 10s linear infinite; }
+
+/* ---- Video-card "not available" + PWA install button ---- */
+.video-card.off{ opacity:.35; filter:grayscale(1); pointer-events:none; }
+.scw-install-btn{
+  position:fixed; bottom:14px; left:14px; z-index:500;
+  width:54px; height:54px; border-radius:50%;
+  background:var(--bubblegum); color:white; font-size:1.35rem;
+  box-shadow:var(--shadow); border:3px solid white;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.scw-install-btn:hover{ transform:scale(1.12); }
+
+/* ===================================================
+   Responsive / mobile-first — works on phones & iPads
+   =================================================== */
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+button, .balloon-btn, .center-btn, .quiz-opt, .video-card, .game-tab, .fun-tab, .yt-tab{ -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+
+/* Safe-area (notched iPhones) for floating buttons */
+.scw-badge{ top:max(12px, env(safe-area-inset-top, 0px)); right:max(12px, env(safe-area-inset-right, 0px)); }
+.scw-install-btn{ bottom:max(14px, env(safe-area-inset-bottom, 0px)); left:max(14px, env(safe-area-inset-left, 0px)); }
+
+@media (max-width: 720px){
+  body{ font-size:14px; }
+  .navbar{ gap:6px; padding:10px 7px; }
+  .balloon-btn{ font-size:.82rem; padding:8px 12px; }
+  .hero{ padding:46px 12px 28px; }
+  .hero p{ font-size:1.02rem; padding:8px 14px; max-width:92vw; }
+  .mascot{ font-size:4.6rem; }
+  .page-hero{ padding:36px 12px 44px; }
+  .page-hero p{ font-size:.96rem; padding:7px 14px; max-width:92vw; }
+  .panel{ padding:18px 13px; border-radius:20px; margin-bottom:22px; }
+  .land-title{ font-size:clamp(1.4rem, 8vw, 1.9rem); word-break:break-word; }
+  .land-sub{ font-size:.94rem; margin-bottom:20px; }
+  .map-grid{ grid-template-columns:repeat(auto-fit,minmax(138px,1fr)); gap:12px; }
+  .land-pin{ padding:14px 10px; }
+  .land-pin .icon{ font-size:2.2rem; }
+  .land-pin h3{ font-size:1.05rem; }
+  .why-row{ gap:12px; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); }
+  .scw-badge{ font-size:.88rem; padding:6px 11px; }
+  .scw-install-btn{ width:48px; height:48px; font-size:1.2rem; }
+  .scw-bubble{ font-size:.9rem; padding:10px 14px; max-width:92vw; }
+  /* play surfaces shrink nicely on small screens */
+  .memory-grid, .mole-grid, .ttt-grid, .simon-grid, .puzzle-grid, .num-grid, .drum-grid, .rps-stage{ max-width:100%; }
+  .catch-area, .bubble-area, .balloon-area, .pond{ height:56vw; min-height:220px; }
+  .skyline{ height:54vw; min-height:240px; }
+  .color-wrap{ flex-direction:column; align-items:center; }
+  .coloring-pic{ width:min(78vw, 300px); height:auto; }
+  .xylophone{ gap:4px; }
+  .bar{ width:44px; height:150px; font-size:.75rem; }
+  .yt-video{ aspect-ratio:16/10; }
+  .show-videos{ grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:9px; }
+  .video-card span{ font-size:.8rem; }
+  .flash-grid{ grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; }
+  .planets{ grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:11px; }
+  .fun-extras{ grid-template-columns:1fr; gap:14px; padding:0 14px; }
+  .extra-card p{ min-height:0; }
+  .yt-title{ font-size:1rem; }
+}
+
+@media (max-width: 400px){
+  .bar{ width:38px; height:130px; }
+  .balloon-btn{ font-size:.78rem; padding:7px 10px; }
+  .mascot{ font-size:3.9rem; }
+}
+
+/* Swipeable menu on small phones (saves vertical space) */
+@media (max-width: 560px){
+  .navbar{ justify-content:flex-start; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .navbar::-webkit-scrollbar{ display:none; }
+  .balloon-btn{ flex:0 0 auto; }
+}
+
+/* Catch-game basket stays smooth & doesn't scroll the page while dragging */
+.catch-area{ touch-action:none; }
+
+/* Nice compact layout on landscape phones */
+@media (max-height: 470px) and (orientation: landscape){
+  .hero{ padding-top:24px; padding-bottom:18px; }
+  .page-hero{ padding-top:16px; padding-bottom:26px; }
+  .mascot{ font-size:3.2rem; }
+  .scw-bubble{ bottom:8px; }
+}

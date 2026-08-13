@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4FC3F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mad Science Lab 🧪 | Sunny Cloud Wonderland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  #experiments-land{ background:linear-gradient(180deg,#F0FFF4,#FFFBF2); }
+  .volcano{ position:relative; width:280px; height:200px; margin:0 auto; }
+  .volcano .cone{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:180px; height:120px; background:#8a5a33; clip-path:polygon(50% 0, 0 100%, 100% 100%); box-shadow:var(--shadow); }
+  .volcano .top{ position:absolute; bottom:60px; left:50%; transform:translateX(-50%); width:64px; height:34px; background:#6b4423; border-radius:12px 12px 0 0; }
+  .volcano .lava{ position:absolute; bottom:88px; left:50%; transform:translateX(-50%); width:60px; height:0; background:#FF4D4D; border-radius:8px; overflow:hidden; transition:height .3s; }
+  .erupting .lava{ height:70px; animation:lavaPulse .5s ease-in-out infinite; }
+  @keyframes lavaPulse{ 0%,100%{ height:70px;} 50%{ height:100px;} }
+  .volcano .bubble{ position:absolute; bottom:120px; left:30%; font-size:1.6rem; opacity:0; }
+  .volcano .bubble.b2{ left:60%; }
+  .erupting .bubble{ animation:popUp 1.1s ease-in forwards; }
+  @keyframes popUp{ 0%{transform:translateY(0) scale(.6); opacity:0;} 20%{opacity:1;} 100%{transform:translateY(-130px) scale(1.5); opacity:0;} }
+  .vol-step{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .vol-step button{ padding:12px 20px; border-radius:999px; box-shadow:var(--shadow); font-weight:700; }
+  .sink-stage{ text-align:center; }
+  .sink-stage .item-big{ font-size:5rem; }
+  .sink-btns{ display:flex; gap:16px; justify-content:center; margin-top:16px; }
+  .sink-btns button{ padding:14px 30px; border-radius:999px; font-weight:800; font-size:1.2rem; box-shadow:var(--shadow); color:white; }
+  .fact-box{ background:var(--cream); border-radius:20px; padding:24px; text-align:center; font-size:1.15rem; font-weight:600; min-height:90px; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="balloon-btn b5" href="index.html">🏠 Home</a>
+  <a class="balloon-btn b1" href="games.html">🎮 Games</a>
+  <a class="balloon-btn b6" href="videos.html">📺 Cartoons</a>
+  <a class="balloon-btn b2" href="stories.html">📖 Stories</a>
+  <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
+  <a class="balloon-btn b4" href="music.html">🎵 Music</a>
+  <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+  <a class="balloon-btn b8" href="animals.html">🦁 Animals</a>
+  <a class="balloon-btn b9" href="space.html">⭐ Space</a>
+  <a class="balloon-btn b10 current" href="experiments.html">🧪 Science</a>
+</nav>
+
+<div class="sky-bg">
+  <div class="cloud" style="width:110px;height:46px;top:12%;left:-10%;animation-duration:42s;"></div>
+  <header class="page-hero">
+    <div class="mascot" aria-hidden="true">🧪</div>
+    <h1>Mad Science Lab</h1>
+    <p>Wacky experiments, sink-or-float, and cool facts!</p>
+  </header>
+</div>
+
+<main class="land" id="experiments-land">
+  <div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">🌋 Erupting Volcano!</h2>
+    <p class="land-sub">Add the secret ingredients, then watch it blow!</p>
+    <div class="volcano" id="volcano">
+      <div class="cone"></div>
+      <div class="top"></div>
+      <div class="lava"></div>
+      <div class="bubble">💧</div>
+      <div class="bubble b2">🫧</div>
+    </div>
+    <p id="vol-msg" style="text-align:center;font-weight:700;margin-top:12px;">Step 1 of 3</p>
+    <div class="vol-step" id="vol-step"></div>
+  </div>
+
+<div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">🪨 Sink or Float?</h2>
+    <p class="land-sub">Tap your guess — will it sink or float?</p>
+    <div class="sink-stage">
+      <div class="item-big" id="sink-item">🍎</div>
+      <div class="score-line">Round <span id="sink-round">1</span> / 8 &nbsp; ✔ <span id="sink-score">0</span></div>
+      <div class="sink-btns">
+        <button style="background:var(--sky);" id="sink-btn">⬇️ Sink</button>
+        <button style="background:#FF9F43;" id="float-btn">🛟 Float</button>
+      </div>
+      <p id="sink-msg" style="font-weight:700;min-height:2em;margin-top:14px;"></p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="land-title" style="font-size:1.6rem;">💡 Wacky Science Facts</h2>
+    <div class="fact-box" id="fact-box">Tap for a new wacky fact!</div>
+    <button class="center-btn" id="fact-next" style="background:var(--grape);">✨ New Fact</button>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="videos.html">Cartoons</a>
+    <a href="stories.html">Stories</a>
+    <a href="coloring.html">Coloring</a>
+    <a href="music.html">Music</a>
+    <a href="fun-zone.html">Fun Zone</a>
+    <a href="animals.html">Animals</a>
+    <a href="space.html">Space</a>
+    <a href="experiments.html">Science</a>
+  </div>
+  <h3>🌈 For Grown-Ups</h3>
+  <div class="grownups">The Mad Science Lab is a safe, all-on-screen play space — animated experiments and simple science games only. Nothing is collected or sent anywhere; stars and stickers live only on this device.</div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+/* ============ ERUPTING VOLCANO ============ */
+const volSteps = [
+  {label:'🥄 Add baking soda', done:'Baking soda added!'},
+  {label:'🍋 Squeeze in lemon juice', done:'Lemon juice in — it fizzes!'},
+  {label:'🎨 Add red color + shake!', done:'It\u2019s FOAMING!'}
+];
+let volStep = 0, volDone = false;
+function renderVol(){
+  const holder = document.getElementById('vol-step');
+  const msg = document.getElementById('vol-msg');
+  holder.innerHTML = '';
+  if(volStep >= volSteps.length){
+    holder.innerHTML = '<button style="background:var(--grass);color:white;" id="vol-reset">🔄 Build Again</button>';
+    document.getElementById('vol-reset').addEventListener('click', () => {
+      volStep = 0; volDone = false;
+      document.getElementById('volcano').classList.remove('erupting');
+      document.getElementById('vol-msg').textContent = 'Step 1 of 3';
+      renderVol();
+    });
+    return;
+  }
+  const s = volSteps[volStep];
+  msg.textContent = 'Step ' + (volStep + 1) + ' of 3 — ' + s.done;
+  const b = document.createElement('button');
+  b.style.cssText = 'background:var(--bubblegum);color:white;';
+  b.textContent = s.label;
+  b.addEventListener('click', () => {
+    volStep++;
+    SCW.sound('pop');
+    if(volStep >= volSteps.length){
+      const v = document.getElementById('volcano');
+      v.classList.add('erupting');
+      SCW.sound('tada');
+      setTimeout(() => {
+        SCW.popConfetti(45); SCW.addStars(2);
+        SCW.showMascotSay('WOOOSH! Fizzy volcano eruption! 🌋🎉', 2600);
+        volDone = true;
+      }, 500);
+    }
+    renderVol();
+  });
+  holder.appendChild(b);
+}
+
+/* ============ SINK OR FLOAT ============ */
+const sinkList = [
+  {item:'🍎 Apple', sink:false, why:'Apples are full of air, so they float like little boats!'},
+  {item:'🪨 Big rock', sink:true, why:'Rocks are heavy for their size, so down they go!'},
+  {item:'🍋 Lemon', sink:false, why:'A lemon has a thick airy skin — it bobs on top!'},
+  {item:'🪵 Stick', sink:false, why:'Wood is light and floaty!'},
+  {item:'🥄 Metal spoon', sink:true, why:'Metal is heavy and dense — straight to the bottom!'},
+  {item:'🏊 Rubber duck', sink:false, why:'Rubber ducks are full of air — they love to float!'},
+  {item:'🥔 Potato', sink:true, why:'Potatoes are dense, so they sink!'},
+  {item:'🛁 Ice cube', sink:false, why:'Ice is lighter than water — that\u2019s why it floats!'}
+];
+let sinkIdx = 0, sinkScore = 0;
+function renderSink(){
+  if(sinkIdx >= sinkList.length){
+    sinkIdx = 0; sinkScore = 0;
+    document.getElementById('sink-round').textContent = 1;
+    document.getElementById('sink-score').textContent = 0;
+  }
+  const s = sinkList[sinkIdx];
+  document.getElementById('sink-item').textContent = s.item;
+  document.getElementById('sink-round').textContent = sinkIdx + 1;
+  document.getElementById('sink-msg').textContent = '';
+}
+function attemptSink(guess){
+  const s = sinkList[sinkIdx];
+  if(guess === s.sink){
+    sinkScore++;
+    document.getElementById('sink-score').textContent = sinkScore;
+    document.getElementById('sink-msg').textContent = '✔ Yes! ' + s.why;
+    if(sinkScore % 8 === 0){ SCW.addStars(2); }
+    SCW.sound('star'); SCW.popConfetti(10);
+  } else {
+    document.getElementById('sink-msg').textContent = 'Nope! ' + s.why;
+    SCW.sound('boing');
+  }
+  setTimeout(() => { sinkIdx++; renderSink(); }, 1500);
+}
+document.getElementById('sink-btn').addEventListener('click', () => attemptSink(true));
+document.getElementById('float-btn').addEventListener('click', () => attemptSink(false));
+
+/* ============ WACKY FACTS ============ */
+const scienceFacts = [
+  'Bubblegum gets its pink color from a mistake — the only dye the inventor had left! 🍬',
+  'Did you know honey never goes bad? Buckets were found that were 3,000 years old! 🍯',
+  'A day on Venus is longer than a year on Venus! 🪐',
+  'Water can boil AND freeze at the same time — called the triple point! 💧',
+  'Bananas are slightly radioactive! 🍌☢️',
+  'The dots on a strawberry are actually tiny fruits! 🍓',
+  'Octopuses have three hearts and blue blood! 🐙',
+  'A cloud can weigh more than a million pounds! ☁️',
+  'Your fingernails grow fastest on the hand you write with! ✋',
+  'Astronauts grow up to 5 cm taller in space! 🚀'
+];
+let factIdx = 0;
+function showFact(){
+  const box = document.getElementById('fact-box');
+  const f = scienceFacts[factIdx];
+  box.textContent = f;
+  SCW.sound('boing');
+  SCW.popConfetti(6);
+  factIdx = (factIdx + 1) % scienceFacts.length;
+}
+document.getElementById('fact-next').addEventListener('click', showFact);
+
+renderVol();
+renderSink();
+showFact();
+</script>
+</body>
+</html>

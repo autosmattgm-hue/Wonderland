@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4FC3F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sunny Cloud">
 <title>Sunny Cloud Wonderland 🌈</title>
 <meta name="description" content="A magical online park for kids — games, cartoons, stories, coloring, music and more!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +30,11 @@
   .why-card .emoji{ font-size:2.2rem; }
   .why-card h4{ margin:8px 0 4px; }
   .why-card p{ margin:0; font-size:.9rem; color:#6a5c85; }
+  .fun-extras{ max-width:980px; margin:0 auto 42px; padding:0 20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; }
+  .extra-card{ border-radius:24px; padding:22px; text-align:center; color:white; box-shadow:var(--shadow); }
+  .extra-card .extra-head{ font-size:2.6rem; }
+  .extra-card h4{ margin:8px 0; }
+  .extra-card p{ margin:0; font-size:.94rem; font-weight:600; min-height:3.4em; }
 </style>
 </head>
 <body>
@@ -34,6 +47,9 @@
   <a class="balloon-btn b3" href="coloring.html">🎨 Coloring</a>
   <a class="balloon-btn b4" href="music.html">🎵 Music</a>
   <a class="balloon-btn b7" href="fun-zone.html">🤪 Fun Zone</a>
+   <a class="balloon-btn b8" href="animals.html">🦁 Animals</a>
+  <a class="balloon-btn b9" href="space.html">⭐ Space</a>
+  <a class="balloon-btn b10" href="experiments.html">🧪 Science</a>
 </nav>
 
 <div class="sky-bg">
@@ -86,6 +102,29 @@
 </div>
 
 <main>
+  <h2 class="land-title" style="margin-top:30px;">🎪 Surprise Land</h2>
+  <p class="land-sub">Spin the wheel, learn a fun fact, and collect stickers!</p>
+  <div class="fun-extras">
+    <div class="extra-card" style="background:linear-gradient(160deg,#A66BF0,#6C4FBB);">
+      <div class="extra-head">🎡</div>
+      <h4>Magic Wheel of Fun</h4>
+      <p>Spin and let surprise pick where we go next!</p>
+      <button class="center-btn" id="magic-wheel" style="background:var(--sun);color:var(--ink);margin-top:10px;">Spin the Wheel!</button>
+    </div>
+    <div class="extra-card" style="background:linear-gradient(160deg,#4FC3F7,#37B5A3);">
+      <div class="extra-head">💡</div>
+      <h4>Today's Fun Fact</h4>
+      <p id="daily-fact">Loading...</p>
+      <button class="center-btn" id="fact-refresh" style="background:white;color:var(--ink);margin-top:10px;">✨ Another!</button>
+    </div>
+    <div class="extra-card" style="background:linear-gradient(160deg,#FF9F43,#FF4D6D);">
+      <div class="extra-head">🏅</div>
+      <h4>My Sticker Book</h4>
+      <p id="sticker-row">⭐ Keep earning stars!</p>
+      <button class="center-btn" id="sticker-open" style="background:white;color:var(--ink);margin-top:10px;">Open My Book</button>
+    </div>
+  </div>
+
   <h2 class="land-title" style="margin-top:50px;">Why kids (and grown-ups) love it here</h2>
   <p class="land-sub">Everything runs right in your browser</p>
   <div class="why-row">
@@ -120,6 +159,9 @@
     <a href="coloring.html">Coloring</a>
     <a href="music.html">Music</a>
     <a href="fun-zone.html">Fun Zone</a>
+    <a href="animals.html">Animals</a>
+    <a href="space.html">Space</a>
+    <a href="experiments.html">Science</a>
   </div>
   <h3>🌈 For Grown-Ups</h3>
   <div class="grownups">
@@ -140,6 +182,58 @@ if(scwMascot){
   scwMascot.addEventListener('click', scwMagic);
   scwMascot.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); scwMagic(); } });
 }
+
+/* ---- Surprise Land ---- */
+const wheelPages = ['games.html','animals.html','space.html','experiments.html','fun-zone.html','stories.html','coloring.html','music.html'];
+const wheelBtn = document.getElementById('magic-wheel');
+if(wheelBtn){
+  wheelBtn.addEventListener('click', function(){
+    SCW.popConfetti(30); SCW.sound('win');
+    const dest = wheelPages[Math.floor(Math.random()*wheelPages.length)];
+    SCW.showMascotSay('The wheel says... let\u2019s go! 🎡', 1500);
+    setTimeout(function(){ window.location.href = dest; }, 950);
+  });
+}
+const dailyFacts = [
+  'Did you know honey never spoils? 🍯',
+  'An octopus has three hearts and blue blood! 🐙',
+  'The Sun is 1.3 million times bigger than Earth! ☀️',
+  'A group of flamingos is called a "flamboyance"! 🦩',
+  'Rainbows only show when the sun is behind you! 🌈',
+  'Cows have best friends and miss them when apart! 🐮',
+  'Hungry penguins propose with a special pebble! 🐧🪨',
+  'Jellyfish have floated in the sea for 500 million years! 🪼'
+];
+function setDailyFact(){
+  const el = document.getElementById('daily-fact');
+  if(!el) return;
+  const d = new Date();
+  el.textContent = dailyFacts[d.getDate() % dailyFacts.length];
+}
+const factBtn = document.getElementById('fact-refresh');
+if(factBtn){
+  factBtn.addEventListener('click', function(){
+    document.getElementById('daily-fact').textContent = dailyFacts[Math.floor(Math.random()*dailyFacts.length)];
+    SCW.sound('pop');
+  });
+}
+function showStickers(){
+  const row = document.getElementById('sticker-row');
+  if(!row) return;
+  const list = SCW.getStickers();
+  row.textContent = list.length ? list.map(s => s[1]).join(' ') : '⭐ Keep earning stars!';
+}
+const stickerBtn = document.getElementById('sticker-open');
+if(stickerBtn){
+  stickerBtn.addEventListener('click', function(){
+    SCW.popConfetti(20); SCW.sound('star');
+    const list = SCW.getStickers();
+    const names = list.length ? list.map(s => s[1] + ' ' + s[2]).join(', ') : 'No stickers yet — collect stars to win stickers!';
+    SCW.showMascotSay('🏅 My stickers: ' + names, 4500);
+  });
+}
+setDailyFact();
+showStickers();
 </script>
 </body>
 </html>
